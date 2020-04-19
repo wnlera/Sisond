@@ -85,12 +85,15 @@
       <option name="presentableId" value="Default" />
       <updated>1587308506101</updated>
       <workItem from="1587308507880" duration="30000" />
-      <workItem from="1587308565381" duration="2013000" />
+      <workItem from="1587308565381" duration="2159000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
   </component>
   <component name="WindowStateProjectService">
     <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587308581395">
