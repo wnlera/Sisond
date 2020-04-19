@@ -1,0 +1,32 @@
+.bg {
+    position: absolute;
+    z-index: -1;
+    animation-timing-function: ease-out;
+    /*display: inline-block;*/
+    /*height: 100vh;*/
+    /*width: 100vw;*/
+    box-sizing: border-box;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: forwards;
+    height: 100%;
+    width: 100%;
+}
+
+@keyframes bg {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.5;
+    }
+}
+
+.bg.green-bg {
+    animation-name: bg;
+    background-color: #3dd28d;
+}
+
+.bg.red-bg {
+    animation-name: bg;
+    background-color: #d14b4b;
+}
