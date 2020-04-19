@@ -15,7 +15,7 @@ def hello_world():
             name = secure_filename(file.filename)
             print(f"Received file {name}")
             # file.save(name)
-            res = checker.check_file(file)
+            res = checker.file_check_interface(file)
             res = json.dumps(res)
             return res
         except Exception as e:
