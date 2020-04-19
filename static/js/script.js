@@ -175,7 +175,7 @@ function SendFile() {
     $.ajax({
         // url: "https://6f412c5e-e568-4592-bcde-2f9f011ad67a.mock.pstmn.io",
         // url: "https://demo2398178.mockable.io/",
-        url: "http://sisond.wndenis.space/",
+        url: window.location.href,
         type: "POST",
         data: fd,
         processData: false,  // tell jQuery not to process the data
