@@ -2,6 +2,7 @@ from flask import Flask, request, make_response, render_template
 from werkzeug.utils import secure_filename
 import json
 import checker
+import uuid
 
 
 app = Flask(__name__, static_folder="static", static_url_path="")
@@ -12,9 +13,10 @@ def hello_world():
     if request.method == "POST":
         try:
             file = request.files['userDocument']
+            file.filename = uuid.uuid4().hex
             name = secure_filename(file.filename)
             print(f"Received file {name}")
-            # file.save(name)
+            file.save(name)
             res = checker.file_check_interface(file)
             res = json.dumps(res)
             return res
