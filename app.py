@@ -13,9 +13,9 @@ def hello_world():
     if request.method == "POST":
         try:
             file = request.files['userDocument']
-            file.filename = uuid.uuid4().hex
             name = secure_filename(file.filename)
             print(f"Received file {name}")
+            name = uuid.uuid4().hex
             file.save(name)
             res = checker.file_check_interface(file)
             res = json.dumps(res)

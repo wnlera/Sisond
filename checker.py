@@ -9,6 +9,8 @@ import docx
 from zipfile import ZipFile
 from xml.dom.minidom import parseString
 
+from lxml import etree
+
 
 def file_check_interface(file, mock=True):
     if mock:
@@ -27,57 +29,89 @@ def mock_return():
 
 
 # ======================================================================
-doc_style = docx.Document('style.docx')
-
-
 def check_file(file_path):
     file_path = docx.Document(file_path)
 
 
-def default_font(file):
+def xml_compare_theme_latin_font(xml_theme, font):
+    if xml_theme is None:
+        raise AttributeError("Нет xml файла")
+
+    for x in xml_theme:
+        for i in x:
+            if "fontScheme" in i.tag:
+                xml_theme = i
+                break
+
+    if xml_theme is None:
+        raise AttributeError("Нет fontScheme в xml файле")
+
+    theme_fonts = []
+    for elem in xml_theme:
+        for font_entry in elem:
+            if "latin" in font_entry.tag:
+                theme_fonts.append(font_entry)
+
+    for theme_font in theme_fonts:
+        if theme_font.attrib["typeface"] != font:
+            return False
+    return True
+
+
+def get_default_font_is_ok(file):
+    """
+    :param file: .docx file to analyse
+    :return: True if document body does not contain any text formatted with default theme or default theme font is Time. Else returns False.
+    """
+    # TRUE IF OK
+    theme_font_is_times = False
+    theme = None
     with ZipFile(file, 'r') as z:
-        data = z.read('word/theme/theme1.xml')  # todo: а я говорил
-        data = str(data)
-
-    default_text_font = False
-    default_header_font = False
-
-    if "majorFont><a:latin typeface=\"Times New Roman\"" in data:
-        default_header_font = True
-
-    if "minorFont><a:latin typeface=\"Times New Roman\"" in data:
-        default_text_font = True
-
+        with z.open('word/theme/theme1.xml') as theme:  # todo: а я говорил
+            theme = etree.parse(theme).getroot()
+        document = z.read('word/document.xml')
+        document = str(document)
     z.close()
-    return default_header_font, default_header_font
+
+    theme_font_is_times = xml_compare_theme_latin_font(theme, "Times New Roman")
+    #
+    # # todo: тоже парсить надо, они могут меняться местами
+    # bad_string = ["asciiTheme=\"minorHAnsi\" w:hAnsiTheme=\"minorHAnsi\" w:cstheme=\"minorHAnsi\"",
+    #               "asciiTheme=\"majorHAnsi\" w:hAnsiTheme=\"majorHAnsi\" w:cstheme=\"majorHAnsi\""]
+    # doc_contains_default_theme = bad_string[0] in document or bad_string[1] in document
+    #
+    # return not doc_contains_default_theme \
+    #        or doc_contains_default_theme and theme_font_is_times
+    return theme_font_is_times
 
 
 def find_content(file):
     ind_para_content = 0
-    for i in range(len(file.paragraphs) + 1):
-        while not (file.paragraphs[i].text == "Содержание"
-                   and file.paragraphs[i + 1].style.name == "toc 1"
-                   or file.paragraphs[i + 1].text.startswith("Введение")):
-            i += 1
-        ind_para_content = i
-        break
-    if ind_para_content == 0:
-        print("Отсутствует содержание")
+    for i in range(len(file.paragraphs)):
+        if file.paragraphs[i].text == "Содержание":
+            ind_para_content = i
+        if ind_para_content + 1 < len(file.paragraphs) and file.paragraphs[i + 1].style.name == "toc 1":
+            ind_para_content = i
+            break
+        else:
+            ind_para_content = 0
+    # if ind_para_content == 0:
+    #     print("Отсутствует содержание")
 
     return ind_para_content
 
 
 def field_check(file):
-    field = []
+    field = False
     for section in file.sections:
-        if abs(section.bottom_margin.cm - 2) > 0.001:
-            field[0] = field[0] + 1
-        elif abs(section.top_margin.cm - 2) > 0.001:
-            field[1] = field[1] + 1
-        elif abs(section.left_margin.cm - 3) > 0.001:
-            field[2] = field[2] + 1
-        elif abs(section.right_margin.cm - 1) > 0.001:
-            field[3] = field[3] + 1
+        if abs(section.bottom_margin.cm - 2) < 0.001:
+            field = True
+        elif abs(section.top_margin.cm - 2) < 0.001:
+            field = True
+        elif abs(section.left_margin.cm - 3) < 0.001:
+            field = True
+        elif abs(section.right_margin.cm - 1) < 0.001:
+            field = True
     return field
 
 
@@ -140,7 +174,7 @@ def check_tables(parent):
             print(txt, " \tПлохая таблица")
 
 
-def check_pics(parent):
+def pics_is_ok(parent):
     pic_pattern = re.compile(r"Рисунок \d+(\.\d+)* – [^а-я].+\.")
     for elem in iter_pics_context(parent):
         txt = elem[0].text if elem[0] else "НЕТ ТЕКСТА"
@@ -155,10 +189,13 @@ def shorten(s):
     return f"\"{s}\"" if len(s) < 25 else f"\"{s[:25]}...\""
 
 
-def check_font(file):
+def get_document_font_is_ok(doc_name):
+    file = docx.Document(doc_name)
+    correct_font = False
+    default_font_is_ok = get_default_font_is_ok(doc_name)  # Todo: нормально передавать имя файла
     ok_fonts = {"Times New Roman"}
-    fonts = set()
-    ind_cont = find_content(file)
+    # ind_cont = find_content(file)
+    ind_cont = 0
 
     for para in file.paragraphs[ind_cont:]:
         # para-level
@@ -167,32 +204,63 @@ def check_font(file):
         while not para_font:
             try:
                 para_font = style.font.name
+                print(style.name, para_font)
                 style = style.base_style
             except Exception as e:
                 print(e)
                 break
         if para_font not in ok_fonts:
             print(f"Paragraph-level incorrect font: {para_font} near {shorten(para.text)}")
-            # fonts.add(para_font)
+            return False
             # para: None
             # run: написано
 
             # run-level
-            for run in para.runs:
-                font = run.font.name
-                print(font, para_font)
-                if font not in ok_fonts:
-                    wrong_font = True
-                    print(f"Run-level incorrect font: {font} near {shorten(run.text)}")
-                    # break
+        for run in para.runs:
+            font = run.font.name
+            style_font = run.style.font.name
+            print(font, style_font, para_font)
+
+            if font is None:
+                if style_font is None:
+                    correct_font = default_font_is_ok
+                else:
+                    correct_font = style_font in ok_fonts
+
+            else:
+                correct_font = font in ok_fonts
+                # print(f"Run-level incorrect font: {font} near {shorten(run.text)}")
+                # break
+
+            if not correct_font:
+                print(f"Run-level incorrect font: {font} near {shorten(para.text)}")
+                return correct_font
+
+    return correct_font
+
+
+doc_name = "Тест.docx"
+print(get_document_font_is_ok(doc_name))
+
+# doc = docx.Document('Курсовая работа.docx')
+doc = docx.Document('Тест.docx')
+print(find_content(doc))
+
+# Если мы читаем стиль
+# То мы должны проверить его XML на наличие темы. Если тема есть - то смотрим шрифты этой темы.
+# Если у рана шрифт НОНЕ, то считаем, что он наследует шрифт параграфа, но нужно проверить стили
+
+# всегда проверять наличие темы, она перекрывает стиль
+
+
 # ======================================================================
 
-
-if __name__ == "__main__":
-    import tkinter as tk
-    from tkinter import filedialog
-
-    root = tk.Tk()
-    root.withdraw()
-    file_path = filedialog.askopenfilename()
-    print(file_check_interface(file_path, mock=False))
+# TODO Обязательно раскоментировать!
+# if __name__ == "__main__":
+#     import tkinter as tk
+#     from tkinter import filedialog
+#
+#     root = tk.Tk()
+#     root.withdraw()
+#     file_path = filedialog.askopenfilename()
+#     print(file_check_interface(file_path, mock=False))

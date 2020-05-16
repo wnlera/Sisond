@@ -36,7 +36,7 @@
       <recent name="D:\ProgrammingProj\P\Sisond\static\img" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.docx_check">
+  <component name="RunManager" selected="Python.checker">
     <configuration name="checker" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Sisond" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -73,6 +73,28 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/docx_check.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pdf" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Sisond" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pdf.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -120,8 +142,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.docx_check" />
         <item itemvalue="Python.checker" />
+        <item itemvalue="Python.pdf" />
+        <item itemvalue="Python.docx_check" />
         <item itemvalue="Python.wsgi" />
       </list>
     </recent_temporary>
@@ -149,7 +172,10 @@
       <workItem from="1589050087495" duration="11071000" />
       <workItem from="1589206306222" duration="3366000" />
       <workItem from="1589286633867" duration="4747000" />
-      <workItem from="1589315563313" duration="1250000" />
+      <workItem from="1589315563313" duration="17141000" />
+      <workItem from="1589334872694" duration="964000" />
+      <workItem from="1589485830699" duration="813000" />
+      <workItem from="1589636248055" duration="1207000" />
     </task>
     <servers />
   </component>
@@ -168,46 +194,46 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="532" y="215" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1587310182050" />
-    <state width="716" height="466" key="DebuggerActiveHint" timestamp="1588936454701">
+    <state width="985" height="466" key="DebuggerActiveHint" timestamp="1589326445408">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="716" height="466" key="DebuggerActiveHint/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1588936454701" />
+    <state width="985" height="466" key="DebuggerActiveHint/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589326445408" />
     <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1587715432762">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1587715432762" />
-    <state width="1493" height="214" key="GridCell.Tab.0.bottom" timestamp="1589061167623">
+    <state width="1493" height="147" key="GridCell.Tab.0.bottom" timestamp="1589637434925">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="214" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589061167623" />
-    <state width="1493" height="214" key="GridCell.Tab.0.center" timestamp="1589061167622">
+    <state width="1493" height="147" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589637434925" />
+    <state width="1493" height="147" key="GridCell.Tab.0.center" timestamp="1589637434925">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="214" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589061167622" />
-    <state width="1493" height="214" key="GridCell.Tab.0.left" timestamp="1589061167622">
+    <state width="1493" height="147" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589637434925" />
+    <state width="1493" height="147" key="GridCell.Tab.0.left" timestamp="1589637434924">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="214" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589061167622" />
-    <state width="1493" height="214" key="GridCell.Tab.0.right" timestamp="1589061167623">
+    <state width="1493" height="147" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589637434924" />
+    <state width="1493" height="147" key="GridCell.Tab.0.right" timestamp="1589637434925">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="214" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589061167623" />
-    <state width="1382" height="250" key="GridCell.Tab.1.bottom" timestamp="1588946508838">
+    <state width="1493" height="147" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589637434925" />
+    <state width="1493" height="260" key="GridCell.Tab.1.bottom" timestamp="1589332802299">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1382" height="250" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1588946508838" />
-    <state width="1382" height="250" key="GridCell.Tab.1.center" timestamp="1588946508838">
+    <state width="1493" height="260" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589332802299" />
+    <state width="1493" height="260" key="GridCell.Tab.1.center" timestamp="1589332802299">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1382" height="250" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1588946508838" />
-    <state width="1382" height="250" key="GridCell.Tab.1.left" timestamp="1588946508838">
+    <state width="1493" height="260" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589332802299" />
+    <state width="1493" height="260" key="GridCell.Tab.1.left" timestamp="1589332802299">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1382" height="250" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1588946508838" />
-    <state width="1382" height="250" key="GridCell.Tab.1.right" timestamp="1588946508838">
+    <state width="1493" height="260" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589332802299" />
+    <state width="1493" height="260" key="GridCell.Tab.1.right" timestamp="1589332802299">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1382" height="250" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1588946508838" />
+    <state width="1493" height="260" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1440.860@0.0.1536.824" timestamp="1589332802299" />
     <state x="277" y="55" key="SettingsEditor" timestamp="1587308605515">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -221,7 +247,8 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sisond$docx_check.coverage" NAME="docx_check Coverage Results" MODIFIED="1589060597111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$wsgi.coverage" NAME="wsgi Coverage Results" MODIFIED="1587311473741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Sisond$checker.coverage" NAME="checker Coverage Results" MODIFIED="1587313635268" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Sisond$pdf.coverage" NAME="pdf Coverage Results" MODIFIED="1589486029352" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$Sisond.coverage" NAME="Sisond Coverage Results" MODIFIED="1588491539080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/Sisond$checker.coverage" NAME="checker Coverage Results" MODIFIED="1589637434914" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
