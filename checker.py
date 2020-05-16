@@ -173,8 +173,21 @@ def tables_is_ok(parent, verifiable_paras):
         valid_table = re.fullmatch(table_pattern, txt)
         if valid_table:
             if flag:
-                table_is_ok = True
-                print(txt, " \tХорошая таблица")
+                if elem[0].paragraph_format.first_line_indent == 0:
+                    table_is_ok = True
+                    print(txt, " \tХорошая таблица")
+                elif elem[0].paragraph_format.first_line_indent is None:
+                    if elem[0].style.paragraph_format.first_line_indent == 0:
+                        table_is_ok = True
+                        print(txt, " \tХорошая таблица")
+                    else:
+                        table_is_ok = False
+                        print(txt, " \tПлохая таблица")
+                        return table_is_ok
+                else:
+                    table_is_ok = False
+                    print(txt, " \tПлохая таблица")
+                    return table_is_ok
         else:
             if flag:
                 table_is_ok = False
@@ -286,7 +299,7 @@ verifiable_paras = []
 for para in doc.paragraphs[find_content(doc):]:
     verifiable_paras.append(para.text)
 
-print(pics_is_ok(doc, verifiable_paras))
+print(tables_is_ok(doc, verifiable_paras))
 
 # почему проверяется в картинках текст параграфов, а не сами параграфы - потому что они разные
 # в выводе параграфов документа <docx.text.paragraph.Paragraph object at 0x00000196EFA34588> Рисунок 1.1 – Пример работы системы проверки правописания в Word.
