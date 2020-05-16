@@ -8,6 +8,7 @@ import re
 import docx
 from zipfile import ZipFile
 from xml.dom.minidom import parseString
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from lxml import etree
 
@@ -196,8 +197,19 @@ def pics_is_ok(parent, verifiable_paras):
         valid_table = re.fullmatch(pic_pattern, txt)
         if valid_table:
             if flag:
-                pic_is_ok = True
-                print(txt, " \tХорошая картинка")
+                if elem[0].alignment == WD_ALIGN_PARAGRAPH.CENTER:
+                    print(elem[0].alignment)
+                    pic_is_ok = True
+                    print(txt, " \tХорошая картинка")
+                elif elem[0].alignment is None:
+                    if elem[0].style.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.CENTER:
+                        print(elem[0].style.paragraph_format.alignment)
+                        pic_is_ok = True
+                        print(txt, " \tХорошая картинка со стилем")
+                else:
+                    pic_is_ok = False
+                    print(txt, " \tПлохая картинка")
+                    return pic_is_ok
         else:
             if flag:
                 pic_is_ok = False
@@ -221,7 +233,6 @@ def get_document_font_is_ok(doc_name):
     default_font_is_ok = get_default_font_is_ok(doc_name)  # Todo: нормально передавать имя файла
     ok_fonts = {"Times New Roman"}
     ind_cont = find_content(file)
-    ind_cont = 0
 
     for para in file.paragraphs[ind_cont:]:
         # para-level
@@ -275,9 +286,9 @@ verifiable_paras = []
 for para in doc.paragraphs[find_content(doc):]:
     verifiable_paras.append(para.text)
 
+print(pics_is_ok(doc, verifiable_paras))
 
-
-
+# почему проверяется в картинках текст параграфов, а не сами параграфы - потому что они разные
 # в выводе параграфов документа <docx.text.paragraph.Paragraph object at 0x00000196EFA34588> Рисунок 1.1 – Пример работы системы проверки правописания в Word.
 # в выводе функции нахождения картинок <docx.text.paragraph.Paragraph object at 0x00000196EFA01DA0> Рисунок 1.1 – Пример работы системы проверки правописания в Word.
 
