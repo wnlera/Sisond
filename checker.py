@@ -95,8 +95,6 @@ def find_content(file):
             break
         else:
             ind_para_content = 0
-    # if ind_para_content == 0:
-    #     print("Отсутствует содержание")
 
     return ind_para_content
 
@@ -163,26 +161,54 @@ def iter_pics_context(parent):
         #     raise Exception("Элемент не параграф и не картинка")
 
 
-def check_tables(parent):
-    table_pattern = re.compile(r"Таблица \d+(\.\d+)* – [^а-я].+\.")
+def tables_is_ok(parent, verifiable_paras):
+    table_is_ok = False
+    table_pattern = re.compile(r"Таблица \d+(\.\d+)* – .+\.")
+    flag = False
     for elem in iter_tables_context(parent):
+        if elem[0].text in verifiable_paras:
+            flag = True
         txt = elem[0].text if elem[0] else "НЕТ ТЕКСТА"
         valid_table = re.fullmatch(table_pattern, txt)
         if valid_table:
-            print(txt, " \tХорошая таблица")
+            if flag:
+                table_is_ok = True
+                print(txt, " \tХорошая таблица")
         else:
-            print(txt, " \tПлохая таблица")
+            if flag:
+                table_is_ok = False
+                print(txt, " \tПлохая таблица")
+                return table_is_ok
+            else:
+                table_is_ok = True
+                print(txt, " \tТаблица не учитывается")
+    return table_is_ok
 
 
-def pics_is_ok(parent):
-    pic_pattern = re.compile(r"Рисунок \d+(\.\d+)* – [^а-я].+\.")
+def pics_is_ok(parent, verifiable_paras):
+    pic_is_ok = False
+    pic_pattern = re.compile(r"Рисунок \d+(\.\d+)* – .+\.")
+    flag = False
     for elem in iter_pics_context(parent):
+        if elem[0].text in verifiable_paras:
+            flag = True
         txt = elem[0].text if elem[0] else "НЕТ ТЕКСТА"
         valid_table = re.fullmatch(pic_pattern, txt)
         if valid_table:
-            print(txt, " \tХорошая картинка")
+            if flag:
+                pic_is_ok = True
+                print(txt, " \tХорошая картинка")
         else:
-            print(txt, " \tПлохая картинка")
+            if flag:
+                pic_is_ok = False
+                print(txt, " \tПлохая картинка")
+                return pic_is_ok
+            else:
+                pic_is_ok = True
+                print(txt, " \tКартинка не учитывается")
+    return pic_is_ok
+
+
 
 
 def shorten(s):
@@ -194,7 +220,7 @@ def get_document_font_is_ok(doc_name):
     correct_font = False
     default_font_is_ok = get_default_font_is_ok(doc_name)  # Todo: нормально передавать имя файла
     ok_fonts = {"Times New Roman"}
-    # ind_cont = find_content(file)
+    ind_cont = find_content(file)
     ind_cont = 0
 
     for para in file.paragraphs[ind_cont:]:
@@ -240,11 +266,21 @@ def get_document_font_is_ok(doc_name):
 
 
 doc_name = "Тест.docx"
-print(get_document_font_is_ok(doc_name))
+# print(get_document_font_is_ok(doc_name))
 
-# doc = docx.Document('Курсовая работа.docx')
-doc = docx.Document('Тест.docx')
-print(find_content(doc))
+doc = docx.Document('Курсовая работа.docx')
+# doc = docx.Document('Тест.docx')
+
+verifiable_paras = []
+for para in doc.paragraphs[find_content(doc):]:
+    verifiable_paras.append(para.text)
+
+
+
+
+# в выводе параграфов документа <docx.text.paragraph.Paragraph object at 0x00000196EFA34588> Рисунок 1.1 – Пример работы системы проверки правописания в Word.
+# в выводе функции нахождения картинок <docx.text.paragraph.Paragraph object at 0x00000196EFA01DA0> Рисунок 1.1 – Пример работы системы проверки правописания в Word.
+
 
 # Если мы читаем стиль
 # То мы должны проверить его XML на наличие темы. Если тема есть - то смотрим шрифты этой темы.
