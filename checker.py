@@ -13,6 +13,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from lxml import etree
 
 
+
 def file_check_interface(file, mock=True):
     if mock:
         return mock_return()
@@ -31,7 +32,10 @@ def mock_return():
 
 # ======================================================================
 def check_file(file_path):
-    file_path = docx.Document(file_path)
+    ans = [0, 0, 0, 0, 0]
+    file = docx.Document(file_path)
+
+    return ans
 
 
 def xml_compare_theme_latin_font(xml_theme, font):
@@ -84,6 +88,58 @@ def get_default_font_is_ok(file):
     # return not doc_contains_default_theme \
     #        or doc_contains_default_theme and theme_font_is_times
     return theme_font_is_times
+
+
+def get_style_theme(file):
+    style_xml = None
+    style_font = {'cstheme': '',
+                  'hAnsiTheme': '',
+                  'eastAsiaTheme': '',
+                  'asciiTheme': ''}
+    styles_id = {}
+    style_id = 0
+    styles_id = {style_id: style_font}
+    with ZipFile(file, 'r') as z:
+        with z.open('word/styles.xml') as style_xml:  # todo: а я говорил
+            style_xml = etree.parse(style_xml).getroot()
+    z.close()
+    if style_xml is None:
+        raise AttributeError("Нет xml файла")
+    style_contains_theme = False
+    # print(style_xml.tag)
+    for x in style_xml:
+        # print(x.tag)
+        if 'style' in x.tag:
+            attributes = x.attrib
+            for key in attributes.keys():
+                if key.endswith('styleId'):
+                    style_id = attributes[key]
+        for style in x:
+            if style.tag.endswith('rPr'):
+                for rPr in style:
+                    # print(rPr.tag)
+                    if rPr.tag.endswith('rFonts'):
+                        rPr_attrib = rPr.attrib
+                        for key in rPr_attrib.keys():
+                            if key.endswith('cstheme'):
+                                style_font["cstheme"] = rPr_attrib[key]
+                            elif key.endswith('hAnsiTheme'):
+                                style_font["hAnsiTheme"] = rPr_attrib[key]
+                            elif key.endswith('eastAsiaTheme'):
+                                style_font["eastAsiaTheme"] = rPr_attrib[key]
+                            elif key.endswith('asciiTheme'):
+                                style_font["asciiTheme"] = rPr_attrib[key]
+
+                styles_id[style_id] = style_font
+
+    return styles_id
+
+
+            # print(attributes['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}styleId'])
+
+
+
+
 
 
 def find_content(file):
@@ -234,10 +290,43 @@ def pics_is_ok(parent, verifiable_paras):
     return pic_is_ok
 
 
+def heading_in_file (para):
+    style = para.style
+    heading = ['Heading 1', 'Heading 2', 'Heading 3']
+    if style.name in heading:
+        return True
+    elif style.name is None:
+        if style.base_style.name in heading:
+            return True
+    return False
 
 
 def shorten(s):
     return f"\"{s}\"" if len(s) < 25 else f"\"{s[:25]}...\""
+
+
+def text_alignment_is_ok(para):
+    alignment_is_ok = False
+    if para.alignment == WD_ALIGN_PARAGRAPH.JUSTYFY:
+        alignment_is_ok = True
+    elif para.alignment is None:
+        if para.style.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.JUSTYFY:
+            alignment_is_ok = True
+    else:
+        alignment_is_ok = False
+    return alignment_is_ok
+
+
+def heading_alignment_is_ok(para):
+    alignment_is_ok = False
+    if para.alignment == WD_ALIGN_PARAGRAPH.CENTER:
+        alignment_is_ok = True
+    elif para.alignment is None:
+        if para.style.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.CENTER:
+            alignment_is_ok = True
+    else:
+        alignment_is_ok = False
+    return alignment_is_ok
 
 
 def get_document_font_is_ok(doc_name):
@@ -248,6 +337,7 @@ def get_document_font_is_ok(doc_name):
     ind_cont = find_content(file)
 
     for para in file.paragraphs[ind_cont:]:
+        print(heading_in_file(para))
         # para-level
         para_font = None
         style = para.style
@@ -289,21 +379,34 @@ def get_document_font_is_ok(doc_name):
     return correct_font
 
 
+
+
+
+
 doc_name = "Тест.docx"
 # print(get_document_font_is_ok(doc_name))
 
-doc = docx.Document('Курсовая работа.docx')
-# doc = docx.Document('Тест.docx')
+# doc = docx.Document('Курсовая работа.docx')
+doc = docx.Document('Тест.docx')
+
+get_style_theme('Тест.docx')
+
+# for para in doc.paragraphs:
+#     print(f'Paragraph style font {para.style.style_id}')
+#     print(f'Paragraph base style font {para.style.base_style.style_id}')
+#     for run in para.runs:
+#         print(f'Run font {run.font.name}')
+#         print(f'Run style font {run.style.style_id}')
+
+
+
+
 
 verifiable_paras = []
 for para in doc.paragraphs[find_content(doc):]:
     verifiable_paras.append(para.text)
 
-print(tables_is_ok(doc, verifiable_paras))
 
-# почему проверяется в картинках текст параграфов, а не сами параграфы - потому что они разные
-# в выводе параграфов документа <docx.text.paragraph.Paragraph object at 0x00000196EFA34588> Рисунок 1.1 – Пример работы системы проверки правописания в Word.
-# в выводе функции нахождения картинок <docx.text.paragraph.Paragraph object at 0x00000196EFA01DA0> Рисунок 1.1 – Пример работы системы проверки правописания в Word.
 
 
 # Если мы читаем стиль

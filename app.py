@@ -17,7 +17,7 @@ def hello_world():
             print(f"Received file {name}")
             name = uuid.uuid4().hex
             file.save(name)
-            res = checker.file_check_interface(file)
+            res = checker.file_check_interface(name)
             res = json.dumps(res)
             return res
         except Exception as e:
