@@ -90,7 +90,7 @@ def get_default_font_is_ok(file):
     return theme_font_is_times
 
 
-def get_style_theme(file):
+def get_styles_with_theme(file):
     style_xml = None
     style_font = {'cstheme': '',
                   'hAnsiTheme': '',
@@ -98,7 +98,7 @@ def get_style_theme(file):
                   'asciiTheme': ''}
     styles_id = {}
     style_id = 0
-    styles_id = {style_id: style_font}
+    # styles_id = {style_id: style_font}
     with ZipFile(file, 'r') as z:
         with z.open('word/styles.xml') as style_xml:  # todo: а я говорил
             style_xml = etree.parse(style_xml).getroot()
@@ -135,7 +135,22 @@ def get_style_theme(file):
     return styles_id
 
 
-            # print(attributes['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}styleId'])
+def get_font_from_fonttable(file):
+    fonts_fonttable = []
+    with ZipFile(file, 'r') as z:
+        with z.open('word/fontTable.xml') as font_table:  # todo: а я говорил
+            font_table = etree.parse(font_table).getroot()
+    z.close()
+    if font_table is None:
+        raise AttributeError("Нет xml файла")
+
+    for x in font_table:
+        font_attrib = x.attrib
+        for key in font_attrib:
+            if key.endswith('name'):
+                fonts_fonttable.append(font_attrib[key])
+    return fonts_fonttable
+
 
 
 
@@ -389,7 +404,8 @@ doc_name = "Тест.docx"
 # doc = docx.Document('Курсовая работа.docx')
 doc = docx.Document('Тест.docx')
 
-get_style_theme('Тест.docx')
+# get_styles_with_theme('Тест.docx')
+get_font_from_fonttable('Тест.docx')
 
 # for para in doc.paragraphs:
 #     print(f'Paragraph style font {para.style.style_id}')
