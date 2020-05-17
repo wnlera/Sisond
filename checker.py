@@ -91,6 +91,11 @@ def get_default_font_is_ok(file):
 
 
 def get_theme_run(file):
+    """
+    :param file: name file to analyse
+    :return: True if any run contain theme, else returns False
+    """
+
     run_theme = {}
     with ZipFile(file, 'r') as z:
         with z.open('word/document.xml') as document:  # todo: а я говорил
@@ -101,7 +106,6 @@ def get_theme_run(file):
         for elem in x:
             if elem.tag.endswith('}p'):
                 for p in elem:
-                    print(p.tag)
                     if p.tag.endswith('pPr'):
                         for pRp in p:
                             if pRp.tag.endswith('rPr'):
@@ -125,13 +129,17 @@ def get_theme_run(file):
         return False
 
 
-
 def get_styles_with_theme(file):
+    """
+    :param file: name file to analyse
+    :return: dict with key: style id, value: theme
+    """
     style_xml = None
-    style_font = {'cstheme': '',
-                  'hAnsiTheme': '',
-                  'eastAsiaTheme': '',
-                  'asciiTheme': ''}
+    # style_font = {'cstheme': '',
+    #               'hAnsiTheme': '',
+    #               'eastAsiaTheme': '',
+    #               'asciiTheme': ''}
+    style_font = {}
     styles_with_theme = {}
     style_id = 0
     # styles_id = {style_id: style_font}
@@ -165,8 +173,9 @@ def get_styles_with_theme(file):
                                 style_font["eastAsiaTheme"] = rPr_attrib[key]
                             elif key.endswith('asciiTheme'):
                                 style_font["asciiTheme"] = rPr_attrib[key]
-
-                styles_with_theme[style_id] = style_font
+                        if len(style_font) != 0:
+                            styles_with_theme[style_id] = style_font
+                        style_font = {}
 
     return styles_with_theme
 
@@ -186,6 +195,21 @@ def get_font_from_fonttable(file):
             if key.endswith('name'):
                 fonts_fonttable.append(font_attrib[key])
     return fonts_fonttable
+
+
+def correctness_fonttable(fonts_fonttable):
+    """
+    :param fonts_fonttable: list font name from fontTable.xml
+    :return: 0 - if Times New Roman not in list,
+    1 - if only Times New Roman in list, 2 - if list contains Times New Roman and other font.
+    """
+    if 'Times New Roman' in fonts_fonttable:
+        if len(fonts_fonttable) == 1:
+            return 1
+        else:
+            return 2
+    else:
+        return 3
 
 
 def get_ind_content(file):
@@ -425,19 +449,110 @@ def get_document_font_is_ok(doc_name):
     return correct_font
 
 
+def get_font_is_ok(file_name):
+    """
+    :param file_name:
+    :return: True if font is ok, else returns False
+    """
+    styles_with_theme = get_styles_with_theme(file_name)
+    run_with_theme = get_theme_run(file_name)
+    file = docx.Document(file_name)
+    ind_content = get_ind_content(file)
+    fonttable = get_font_from_fonttable(file_name)
+    font_table = correctness_fonttable(fonttable)
+    theme_is_ok = get_default_font_is_ok(file_name)
+
+    ok_font = 'Times New Roman'
+    font_is_ok = False
+    if font_table == 0:
+        print("Ошибка в таблице стилей")
+        return False
+    elif font_table == 1:
+        font_is_ok = True
+    else:
+        if run_with_theme:
+            if theme_is_ok:
+                font_is_ok = True
+            else:
+                print("Ошибка в run есть тема")
+                return False
+        else:
+            for para in file.paragraphs[ind_content:]:
+                for run in para.runs:
+                    if run.font.name is not None:
+                        if run.font.name == ok_font:
+                            font_is_ok = True
+                        else:
+                            print("Ошибка неправильный шрифт в run")
+                            return False
+                    elif run.style.font.name is not None:
+                        style = run.style
+                        if style.style_id in styles_with_theme:
+                            if theme_is_ok:
+                                font_is_ok = True
+                            else:
+                                print("Ошибка в стиле run есть тема")
+                                return False
+                        else:
+                            if style.font.name == ok_font:
+                                font_is_ok = True
+                            else:
+                                print("Ошибка в стиле run")
+                                return False
+                    elif run.style.font is None and run.style.base_style is not None:
+                        font = run.style.font
+                        style = run.style
+                        while font is None:
+                            style = style.base_style
+                            if style.style_id in styles_with_theme:
+                                if theme_is_ok:
+                                    font_is_ok = True
+                                else:
+                                    print("Ошибка в родительском стиле run есть тема")
+                                    return False
+                            else:
+                                font = style.font.name
+                        if font == ok_font:
+                            font_is_ok = True
+                        else:
+                            print("Ошибка не тот шрифт в родительском стиле run")
+                            return False
+                    else:
+                        style = para.style
+                        font = style.font.name
+                        while font is None:
+                            style = style.base_style
+                            if style.style_id in styles_with_theme:
+                                if theme_is_ok:
+                                    font_is_ok = True
+                                else:
+                                    print("Ошибка в стиле параграфа есть тема")
+                                    return False
+                            else:
+                                font = style.font.name
+                        print(font)
+                        if font == ok_font:
+                            font_is_ok = True
+                        else:
+                            print("Ошибка в стиле параграфе не тот шрифт")
+                            return False
+
+    return font_is_ok
 
 
+file_name = "Тест.docx"
 
 
-doc_name = "Тест.docx"
-# print(get_document_font_is_ok(doc_name))
+print(get_font_is_ok(file_name))
+
+# print(get_document_font_is_ok(file))
 
 # doc = docx.Document('Курсовая работа.docx')
-doc = docx.Document('Тест.docx')
 
-# get_styles_with_theme('Тест.docx')
+
+print(get_styles_with_theme('Тест.docx'))
 # get_font_from_fonttable('Тест.docx')
-get_theme_run('Тест.docx')
+#print(get_theme_run('Тест.docx'))
 
 # for para in doc.paragraphs:
 #     print(f'Paragraph style font {para.style.style_id}')
@@ -450,9 +565,9 @@ get_theme_run('Тест.docx')
 
 
 
-verifiable_paras = []
-for para in doc.paragraphs[get_ind_content(doc):]:
-    verifiable_paras.append(para.text)
+# verifiable_paras = []
+# for para in file.paragraphs[get_ind_content(file):]:
+#     verifiable_paras.append(para.text)
 
 
 
