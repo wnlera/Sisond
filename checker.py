@@ -90,13 +90,49 @@ def get_default_font_is_ok(file):
     return theme_font_is_times
 
 
+def get_theme_run(file):
+    run_theme = {}
+    with ZipFile(file, 'r') as z:
+        with z.open('word/document.xml') as document:  # todo: а я говорил
+            document = etree.parse(document).getroot()
+    z.close()
+
+    for x in document:
+        for elem in x:
+            if elem.tag.endswith('}p'):
+                for p in elem:
+                    print(p.tag)
+                    if p.tag.endswith('pPr'):
+                        for pRp in p:
+                            if pRp.tag.endswith('rPr'):
+                                for rPr in pRp:
+                                    # print(rPr.tag)
+                                    if rPr.tag.endswith('rFonts'):
+                                        rPr_attrib = rPr.attrib
+                                        for key in rPr_attrib.keys():
+                                            if key.endswith('cstheme'):
+                                                run_theme["cstheme"] = rPr_attrib[key]
+                                            elif key.endswith('hAnsiTheme'):
+                                                run_theme["hAnsiTheme"] = rPr_attrib[key]
+                                            elif key.endswith('eastAsiaTheme'):
+                                                run_theme["eastAsiaTheme"] = rPr_attrib[key]
+                                            elif key.endswith('asciiTheme'):
+                                                run_theme["asciiTheme"] = rPr_attrib[key]
+    print(run_theme)
+    if len(run_theme) != 0:
+        return True
+    else:
+        return False
+
+
+
 def get_styles_with_theme(file):
     style_xml = None
     style_font = {'cstheme': '',
                   'hAnsiTheme': '',
                   'eastAsiaTheme': '',
                   'asciiTheme': ''}
-    styles_id = {}
+    styles_with_theme = {}
     style_id = 0
     # styles_id = {style_id: style_font}
     with ZipFile(file, 'r') as z:
@@ -130,9 +166,9 @@ def get_styles_with_theme(file):
                             elif key.endswith('asciiTheme'):
                                 style_font["asciiTheme"] = rPr_attrib[key]
 
-                styles_id[style_id] = style_font
+                styles_with_theme[style_id] = style_font
 
-    return styles_id
+    return styles_with_theme
 
 
 def get_font_from_fonttable(file):
@@ -152,12 +188,7 @@ def get_font_from_fonttable(file):
     return fonts_fonttable
 
 
-
-
-
-
-
-def find_content(file):
+def get_ind_content(file):
     ind_para_content = 0
     for i in range(len(file.paragraphs)):
         if file.paragraphs[i].text == "Содержание":
@@ -171,7 +202,7 @@ def find_content(file):
     return ind_para_content
 
 
-def field_check(file):
+def get_field(file):
     field = False
     for section in file.sections:
         if abs(section.bottom_margin.cm - 2) < 0.001:
@@ -349,7 +380,7 @@ def get_document_font_is_ok(doc_name):
     correct_font = False
     default_font_is_ok = get_default_font_is_ok(doc_name)  # Todo: нормально передавать имя файла
     ok_fonts = {"Times New Roman"}
-    ind_cont = find_content(file)
+    ind_cont = get_ind_content(file)
 
     for para in file.paragraphs[ind_cont:]:
         print(heading_in_file(para))
@@ -405,7 +436,8 @@ doc_name = "Тест.docx"
 doc = docx.Document('Тест.docx')
 
 # get_styles_with_theme('Тест.docx')
-get_font_from_fonttable('Тест.docx')
+# get_font_from_fonttable('Тест.docx')
+get_theme_run('Тест.docx')
 
 # for para in doc.paragraphs:
 #     print(f'Paragraph style font {para.style.style_id}')
@@ -419,7 +451,7 @@ get_font_from_fonttable('Тест.docx')
 
 
 verifiable_paras = []
-for para in doc.paragraphs[find_content(doc):]:
+for para in doc.paragraphs[get_ind_content(doc):]:
     verifiable_paras.append(para.text)
 
 
