@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import json
 import checker
 import uuid
-
+import os
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 
@@ -18,6 +18,7 @@ def hello_world():
             name = uuid.uuid4().hex
             file.save(name)
             res = checker.file_check_interface(name, mock=False)
+            os.remove(name)
             res = json.dumps(res)
             return res
         except Exception as e:

@@ -39,9 +39,10 @@ def check_file(file_path):
               line_spacing_is_ok(file_path), tables_is_ok(file, verifiable_paras), pics_is_ok(file, verifiable_paras)]
 
     result = list(map(int, result))
-    for elem in result:
-        if elem == 0:
-            elem = 2
+
+    for i in range(len(result)):
+        if result[i] == 0:
+            result[i] = 2
 
     return result
 
@@ -318,7 +319,7 @@ def tables_is_ok(parent, verifiable_paras):
     count = 0
     for elem in iter_tables_context(parent):
         count = 1
-        if elem[0].text in verifiable_paras:
+        if elem[0] and elem[0].text != "\n" and elem[0].text != "" and elem[0].text in verifiable_paras:
             flag = True
         txt = elem[0].text if elem[0] else "НЕТ ТЕКСТА"
         valid_table = re.fullmatch(table_pattern, txt)
@@ -326,11 +327,11 @@ def tables_is_ok(parent, verifiable_paras):
             if flag:
                 if elem[0].paragraph_format.first_line_indent == 0:
                     table_is_ok = True
-                    print(txt, " \tХорошая таблица")
+                    #print(txt, " \tХорошая таблица")
                 elif elem[0].paragraph_format.first_line_indent is None:
                     if elem[0].style.paragraph_format.first_line_indent == 0:
                         table_is_ok = True
-                        print(txt, " \tХорошая таблица")
+                        #print(txt, " \tХорошая таблица")
                     else:
                         table_is_ok = False
                         print(txt, " \tПлохая таблица")
@@ -346,7 +347,7 @@ def tables_is_ok(parent, verifiable_paras):
                 return table_is_ok
             else:
                 table_is_ok = True
-                print(txt, " \tТаблица не учитывается")
+                #print(txt, " \tТаблица не учитывается")
     if count == 0:
         table_is_ok = True
     return table_is_ok
@@ -359,24 +360,22 @@ def pics_is_ok(parent, verifiable_paras):
     count = 0
     for elem in iter_pics_context(parent):
         count = 1
-        if elem[0].text in verifiable_paras:
+        if elem[0] and elem[0].text != "\n" and elem[0].text != "" and elem[0].text in verifiable_paras:
             flag = True
         txt = elem[0].text if elem[0] else "НЕТ ТЕКСТА"
         valid_pic = re.fullmatch(pic_pattern, txt)
         if valid_pic:
             if flag:
                 if elem[0].alignment == WD_ALIGN_PARAGRAPH.CENTER:
-                    print(elem[0].alignment)
                     pic_is_ok = True
-                    print(txt, " \tХорошая картинка")
+                    #print(txt, " \tХорошая картинка")
                 elif elem[0].alignment is None:
                     if elem[0].style.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.CENTER:
-                        print(elem[0].style.paragraph_format.alignment)
                         pic_is_ok = True
-                        print(txt, " \tХорошая картинка со стилем")
+                        #print(txt, " \tХорошая картинка со стилем")
                 else:
                     pic_is_ok = False
-                    print(txt, " \tПлохая картинка")
+                    print(txt, " \tПлохая картинка1")
                     return pic_is_ok
         else:
             if flag:
@@ -385,7 +384,7 @@ def pics_is_ok(parent, verifiable_paras):
                 return pic_is_ok
             else:
                 pic_is_ok = True
-                print(txt, " \tКартинка не учитывается")
+                #print(txt, " \tКартинка не учитывается")
     if count == 0:
         pic_is_ok = True
 
@@ -405,30 +404,6 @@ def heading_in_file(para):
 
 def shorten(s):
     return f"\"{s}\"" if len(s) < 25 else f"\"{s[:25]}...\""
-
-
-def text_alignment_is_ok(para):
-    alignment_is_ok = False
-    if para.alignment == WD_ALIGN_PARAGRAPH.JUSTYFY:
-        alignment_is_ok = True
-    elif para.alignment is None:
-        if para.style.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.JUSTYFY:
-            alignment_is_ok = True
-    else:
-        alignment_is_ok = False
-    return alignment_is_ok
-
-
-def heading_alignment_is_ok(para):
-    alignment_is_ok = False
-    if para.alignment == WD_ALIGN_PARAGRAPH.CENTER:
-        alignment_is_ok = True
-    elif para.alignment is None:
-        if para.style.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.CENTER:
-            alignment_is_ok = True
-    else:
-        alignment_is_ok = False
-    return alignment_is_ok
 
 
 def get_font_is_ok(file_name):
@@ -572,7 +547,7 @@ def alignment_is_ok(file_name):
                 if para.alignment:
                     if para.alignment == WD_ALIGN_PARAGRAPH.CENTER:
                         alignment_ok = True
-                        print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
+                        #print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
@@ -584,7 +559,7 @@ def alignment_is_ok(file_name):
                         alignment = style.paragraph_format.alignment
                     if alignment == WD_ALIGN_PARAGRAPH.CENTER:
                         alignment_ok = True
-                        print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
+                        #print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
@@ -592,7 +567,7 @@ def alignment_is_ok(file_name):
                 if para.alignment:
                     if para.alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
                         alignment_ok = True
-                        print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
+                        #print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
@@ -604,7 +579,7 @@ def alignment_is_ok(file_name):
                         alignment = style.paragraph_format.alignment
                     if alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
                         alignment_ok = True
-                        print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
+                        #print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
@@ -621,13 +596,13 @@ def line_spacing_is_ok(file_name):
     ind_cont = get_ind_content(file)
     line_spacing_ok = False
     for para in file.paragraphs[ind_cont:]:
-        if para.text:
+        if para.text and para.text != "\n":
             if para.paragraph_format.line_spacing_rule:
                 if para.paragraph_format.line_spacing_rule == WD_LINE_SPACING.ONE_POINT_FIVE:
                     line_spacing_ok = True
                 else:
                     line_spacing_ok = False
-                    print(f"Это параграф неправильным межстрочным интервалом: {shorten(para.text)}")
+                    print(f"Это параграф с неправильным межстрочным интервалом: {shorten(para.text)}")
             else:
                 style = para.style
                 line_spacing = style.paragraph_format.line_spacing_rule
@@ -639,16 +614,15 @@ def line_spacing_is_ok(file_name):
                 else:
                     line_spacing_ok = False
                     print(f"Это параграф неправильным стилем и межстрочным интервалом: {shorten(para.text)}")
-            if not line_spacing_ok:
-                return line_spacing_ok
+        elif para.text == "\n":
+            alignment_ok = True
+        if not line_spacing_ok:
+            return line_spacing_ok
     return line_spacing_ok
 
 
 
-print(check_file("Тест.docx"))
-
-
-
+# print(check_file("Практика_отчет — копия.docx"))
 
 # ======================================================================
 
