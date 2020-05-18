@@ -182,7 +182,8 @@ def get_styles_with_theme(file):
                                 style_font["eastAsiaTheme"] = rPr_attrib[key]
                             elif key.endswith('asciiTheme'):
                                 style_font["asciiTheme"] = rPr_attrib[key]
-                        if len(style_font) == 4: #возможно, правильнее проверять только тех, у кого asciiTheme и hAnsiTheme
+                        if len(
+                                style_font) == 4:  # возможно, правильнее проверять только тех, у кого asciiTheme и hAnsiTheme
                             styles_with_theme[style_id] = style_font
                         style_font = {}
 
@@ -218,7 +219,7 @@ def correctness_fonttable(fonts_fonttable):
         else:
             return 2
     else:
-        return 3
+        return 0
 
 
 def get_ind_content(file):
@@ -239,17 +240,18 @@ def get_ind_content(file):
 
 
 def get_field(file):
-    field = False
+    """
+
+    :param file: docx Document()
+    :return: True if margins ok else False
+    """
     for section in file.sections:
-        if abs(section.bottom_margin.cm - 2) < 0.001:
-            field = True
-        elif abs(section.top_margin.cm - 2) < 0.001:
-            field = True
-        elif abs(section.left_margin.cm - 3) < 0.001:
-            field = True
-        elif abs(section.right_margin.cm - 1) < 0.001:
-            field = True
-    return field
+        if abs(section.bottom_margin.cm - 2) > 0.001 or \
+                abs(section.top_margin.cm - 2) > 0.001 or \
+                abs(section.left_margin.cm - 3) > 0.001 or \
+                abs(section.right_margin.cm - 1) > 0.001:
+            return False
+    return True
 
 
 def iter_block_items(parent):
@@ -523,7 +525,7 @@ def get_font_is_ok(file_name):
                                 print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
                                 return False
                         else:
-                            if run.style.base_style is not None:
+                            if run.style.base_style is not None and run.style.base_style.font.name is not None:
                                 font = run.style.font.name
                                 style = run.style
                                 while font is None:
@@ -531,14 +533,14 @@ def get_font_is_ok(file_name):
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
                                             font_is_ok = True
+                                            # todo: check it
+                                            break
                                         else:
                                             print(f"Ошибка в родительском стиле run есть тема {shorten(para.text)}")
                                             return False
                                     else:
                                         font = style.font.name
-                                if font == ok_font:
-                                    font_is_ok = True
-                                else:
+                                if font != ok_font:
                                     print(f"Ошибка не тот шрифт в родительском стиле run {shorten(para.text)}")
                                     return False
                             else:
@@ -547,6 +549,7 @@ def get_font_is_ok(file_name):
                                 if font is None:
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
+                                            # todo: не используется font_is_ok - исправить
                                             font_is_ok = True
                                         else:
                                             print(f"Ошибка в стиле параграфа есть тема {shorten(para.text)}")
@@ -577,7 +580,7 @@ file_name = "Тест.docx"
 # for para in file.paragraphs:
 #     for run in para.runs:
 #         print()
-# TODO строгий стиль ломает всё, понять, почему так
+
 print(get_font_is_ok(file_name))
 
 # print(get_document_font_is_ok(file))
