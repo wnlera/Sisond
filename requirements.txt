@@ -10,7 +10,6 @@ py7zr==0.6
 pycryptodome==3.9.7
 PyPDF2==1.26.0
 python-docx==0.8.10
-pywin32==227
 texttable==1.6.2
 Werkzeug==1.0.0
 wincertstore==0.2
