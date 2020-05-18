@@ -1,16 +1,17 @@
 import random
+import re
+import docx
 from docx.document import Document
 from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
 from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
-import re
-import docx
 from zipfile import ZipFile
 from xml.dom.minidom import parseString
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from lxml import etree
 from docx.enum.text import WD_LINE_SPACING
+
 
 def file_check_interface(file, mock=True):
     if mock:
