@@ -195,7 +195,7 @@ function SendFile() {
                 }
                 setTimeout(() => listEntries[i].setState(data[i]), i * 200);
             }
-            setTimeout(() => updateBackground(ok), data.length * 200 + 150)
+            // setTimeout(() => updateBackground(ok), data.length * 200 + 150)
 
         },
         error: function (xhr, textStatus, errorThrown) {
@@ -218,11 +218,11 @@ function SendFile() {
 }
 
 
-function updateBackground(ok) {
-    if (ok){
-        $resultBg.addClass("green-bg")
-    }
-    else{
-        $resultBg.addClass("red-bg")
-    }
-}
+// function updateBackground(ok) {
+//     if (ok){
+//         $resultBg.addClass("green-bg")
+//     }
+//     else{
+//         $resultBg.addClass("red-bg")
+//     }
+// }
