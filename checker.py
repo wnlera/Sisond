@@ -39,6 +39,9 @@ def check_file(file_path):
               line_spacing_is_ok(file_path), tables_is_ok(file, verifiable_paras), pics_is_ok(file, verifiable_paras)]
 
     result = list(map(int, result))
+    for elem in result:
+        if elem == 0:
+            elem = 2
 
     return result
 
@@ -642,10 +645,7 @@ def line_spacing_is_ok(file_name):
 
 
 
-
-
-
-
+print(check_file("Тест.docx"))
 
 
 
