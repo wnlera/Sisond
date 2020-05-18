@@ -9,9 +9,8 @@ import docx
 from zipfile import ZipFile
 from xml.dom.minidom import parseString
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-
 from lxml import etree
-
+from docx.enum.text import WD_LINE_SPACING
 
 def file_check_interface(file, mock=True):
     if mock:
@@ -31,10 +30,17 @@ def mock_return():
 
 # ======================================================================
 def check_file(file_path):
-    ans = [0, 0, 0, 0, 0]
     file = docx.Document(file_path)
+    verifiable_paras = []
+    for para in file.paragraphs[get_ind_content(file):]:
+        verifiable_paras.append(para.text)
 
-    return ans
+    result = [get_ind_content(file) > 0, get_margin_is_ok(file), get_font_is_ok(file_path), alignment_is_ok(file_path),
+              line_spacing_is_ok(file_path), tables_is_ok(file, verifiable_paras), pics_is_ok(file, verifiable_paras)]
+
+    result = list(map(int, result))
+
+    return result
 
 
 def xml_compare_theme_latin_font(xml_theme, font):
@@ -239,7 +245,7 @@ def get_ind_content(file):
     return ind_para_content
 
 
-def get_field(file):
+def get_margin_is_ok(file):
     """
 
     :param file: docx Document()
@@ -306,7 +312,9 @@ def tables_is_ok(parent, verifiable_paras):
     table_is_ok = False
     table_pattern = re.compile(r"Таблица \d+(\.\d+)* – .+\.")
     flag = False
+    count = 0
     for elem in iter_tables_context(parent):
+        count = 1
         if elem[0].text in verifiable_paras:
             flag = True
         txt = elem[0].text if elem[0] else "НЕТ ТЕКСТА"
@@ -336,6 +344,8 @@ def tables_is_ok(parent, verifiable_paras):
             else:
                 table_is_ok = True
                 print(txt, " \tТаблица не учитывается")
+    if count == 0:
+        table_is_ok = True
     return table_is_ok
 
 
@@ -343,12 +353,14 @@ def pics_is_ok(parent, verifiable_paras):
     pic_is_ok = False
     pic_pattern = re.compile(r"Рисунок \d+(\.\d+)* – .+\.")
     flag = False
+    count = 0
     for elem in iter_pics_context(parent):
+        count = 1
         if elem[0].text in verifiable_paras:
             flag = True
         txt = elem[0].text if elem[0] else "НЕТ ТЕКСТА"
-        valid_table = re.fullmatch(pic_pattern, txt)
-        if valid_table:
+        valid_pic = re.fullmatch(pic_pattern, txt)
+        if valid_pic:
             if flag:
                 if elem[0].alignment == WD_ALIGN_PARAGRAPH.CENTER:
                     print(elem[0].alignment)
@@ -371,6 +383,9 @@ def pics_is_ok(parent, verifiable_paras):
             else:
                 pic_is_ok = True
                 print(txt, " \tКартинка не учитывается")
+    if count == 0:
+        pic_is_ok = True
+
     return pic_is_ok
 
 
@@ -412,59 +427,6 @@ def heading_alignment_is_ok(para):
         alignment_is_ok = False
     return alignment_is_ok
 
-
-# теперь эта функция не нужна
-def get_document_font_is_ok(doc_name):
-    file = docx.Document(doc_name)
-    correct_font = False
-    default_font_is_ok = get_default_font_is_ok(doc_name)  # Todo: нормально передавать имя файла
-    ok_fonts = {"Times New Roman"}
-    ind_cont = get_ind_content(file)
-
-    for para in file.paragraphs[ind_cont:]:
-        print(heading_in_file(para))
-        # para-level
-        para_font = None
-        style = para.style
-        while not para_font:
-            try:
-                para_font = style.font.name
-                print(style.name, para_font)
-                style = style.base_style
-            except Exception as e:
-                print(e)
-                break
-        if para_font not in ok_fonts:
-            print(f"Paragraph-level incorrect font: {para_font} near {shorten(para.text)}")
-            return False
-            # para: None
-            # run: написано
-
-            # run-level
-        for run in para.runs:
-            font = run.font.name
-            style_font = run.style.font.name
-            print(font, style_font, para_font)
-
-            if font is None:
-                if style_font is None:
-                    correct_font = default_font_is_ok
-                else:
-                    correct_font = style_font in ok_fonts
-
-            else:
-                correct_font = font in ok_fonts
-                # print(f"Run-level incorrect font: {font} near {shorten(run.text)}")
-                # break
-
-            if not correct_font:
-                print(f"Run-level incorrect font: {font} near {shorten(para.text)}")
-                return correct_font
-
-    return correct_font
-
-
-# можно удалять верхнюю функцию
 
 def get_font_is_ok(file_name):
     """
@@ -574,42 +536,118 @@ def get_font_is_ok(file_name):
     return font_is_ok
 
 
-file_name = "Тест.docx"
-# file_name = "Курсовая работа.docx"
-# file = docx.Document(file_name)
-# for para in file.paragraphs:
-#     for run in para.runs:
-#         print()
+def get_toc_text(file_name):
+    toc_texts = []
+    with ZipFile(file_name, 'r') as z:
+        with z.open('word/document.xml') as toc_doc:  # todo: а я говорил
+            toc_doc = etree.parse(toc_doc).getroot()
+    z.close()
+    if toc_doc is None:
+        raise AttributeError("Нет xml файла")
 
-print(get_font_is_ok(file_name))
-
-# print(get_document_font_is_ok(file))
-
-# doc = docx.Document('Курсовая работа.docx')
-
-
-# print(get_styles_with_theme('Тест.docx'))
-# get_font_from_fonttable('Тест.docx')
-# print(get_theme_run('Тест.docx'))
-
-# for para in doc.paragraphs:
-#     print(f'Paragraph style font {para.style.style_id}')
-#     print(f'Paragraph base style font {para.style.base_style.style_id}')
-#     for run in para.runs:
-#         print(f'Run font {run.font.name}')
-#         print(f'Run style font {run.style.style_id}')
+    for elem in toc_doc:
+        for p in elem:
+            for tag in p:
+                if 'hyperlink' in tag.tag:
+                    for r in tag:
+                        if 't' in r.tag:
+                            for t in r:
+                                if t.text:
+                                    toc_texts.append(t.text)
+    return toc_texts
 
 
-# verifiable_paras = []
-# for para in file.paragraphs[get_ind_content(file):]:
-#     verifiable_paras.append(para.text)
+def alignment_is_ok(file_name):
+    doc = docx.Document(file_name)
+    ind_cont = get_ind_content(doc)
+    style_name = ["Heading 1", "Heading 2", "Heading 3"]
+    pic_pattern = re.compile(r"Рисунок \d+(\.\d+)* – .+\.")
+    alignment_ok = False
+    for para in doc.paragraphs[ind_cont:]:
+        if para.text and len(para.text) != 0 and para.text != "\n":
+            if para.style.name in style_name or para.style.base_style and para.style.base_style.name in style_name or re.fullmatch(pic_pattern, para.text):
+                if para.alignment:
+                    if para.alignment == WD_ALIGN_PARAGRAPH.CENTER:
+                        alignment_ok = True
+                        print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
+                    else:
+                        alignment_ok = False
+                        print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
+                else:
+                    style = para.style
+                    alignment = para.style.paragraph_format.alignment
+                    while alignment is None:
+                        style = style.base_style
+                        alignment = style.paragraph_format.alignment
+                    if alignment == WD_ALIGN_PARAGRAPH.CENTER:
+                        alignment_ok = True
+                        print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
+                    else:
+                        alignment_ok = False
+                        print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
+            else:
+                if para.alignment:
+                    if para.alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
+                        alignment_ok = True
+                        print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
+                    else:
+                        alignment_ok = False
+                        print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
+                else:
+                    style = para.style
+                    alignment = para.style.paragraph_format.alignment
+                    while alignment is None and style.base_style:
+                        style = style.base_style
+                        alignment = style.paragraph_format.alignment
+                    if alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
+                        alignment_ok = True
+                        print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
+                    else:
+                        alignment_ok = False
+                        print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
+        elif para.text == "\n":
+            alignment_ok = True
+        if not alignment_ok:
+            return alignment_ok
+
+    return alignment_ok
 
 
-# Если мы читаем стиль
-# То мы должны проверить его XML на наличие темы. Если тема есть - то смотрим шрифты этой темы.
-# Если у рана шрифт НОНЕ, то считаем, что он наследует шрифт параграфа, но нужно проверить стили
+def line_spacing_is_ok(file_name):
+    file = docx.Document(file_name)
+    ind_cont = get_ind_content(file)
+    line_spacing_ok = False
+    for para in file.paragraphs[ind_cont:]:
+        if para.text:
+            if para.paragraph_format.line_spacing_rule:
+                if para.paragraph_format.line_spacing_rule == WD_LINE_SPACING.ONE_POINT_FIVE:
+                    line_spacing_ok = True
+                else:
+                    line_spacing_ok = False
+                    print(f"Это параграф неправильным межстрочным интервалом: {shorten(para.text)}")
+            else:
+                style = para.style
+                line_spacing = style.paragraph_format.line_spacing_rule
+                while line_spacing is None:
+                    style = style.base_style
+                    line_spacing = style.paragraph_format.line_spacing_rule
+                if line_spacing == WD_LINE_SPACING.ONE_POINT_FIVE:
+                    line_spacing_ok = True
+                else:
+                    line_spacing_ok = False
+                    print(f"Это параграф неправильным стилем и межстрочным интервалом: {shorten(para.text)}")
+            if not line_spacing_ok:
+                return line_spacing_ok
+    return line_spacing_ok
 
-# всегда проверять наличие темы, она перекрывает стиль
+
+
+
+
+
+
+
+
 
 
 # ======================================================================
