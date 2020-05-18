@@ -334,16 +334,16 @@ def tables_is_ok(parent, verifiable_paras):
                         #print(txt, " \tХорошая таблица")
                     else:
                         table_is_ok = False
-                        print(txt, " \tПлохая таблица")
+                        #print(txt, " \tПлохая таблица")
                         return table_is_ok
                 else:
                     table_is_ok = False
-                    print(txt, " \tПлохая таблица")
+                    #print(txt, " \tПлохая таблица")
                     return table_is_ok
         else:
             if flag:
                 table_is_ok = False
-                print(txt, " \tПлохая таблица")
+                #print(txt, " \tПлохая таблица")
                 return table_is_ok
             else:
                 table_is_ok = True
@@ -375,12 +375,12 @@ def pics_is_ok(parent, verifiable_paras):
                         #print(txt, " \tХорошая картинка со стилем")
                 else:
                     pic_is_ok = False
-                    print(txt, " \tПлохая картинка1")
+                    #print(txt, " \tПлохая картинка1")
                     return pic_is_ok
         else:
             if flag:
                 pic_is_ok = False
-                print(txt, " \tПлохая картинка")
+                #print(txt, " \tПлохая картинка")
                 return pic_is_ok
             else:
                 pic_is_ok = True
@@ -422,7 +422,7 @@ def get_font_is_ok(file_name):
     ok_font = 'Times New Roman'
     font_is_ok = False
     if font_table == 0:
-        print("Ошибка в таблице стилей")
+        #print("Ошибка в таблице стилей")
         return False
     elif font_table == 1:
         font_is_ok = True
@@ -431,7 +431,7 @@ def get_font_is_ok(file_name):
             if theme_is_ok:
                 font_is_ok = True
             else:
-                print("Ошибка в run есть тема")
+                #print("Ошибка в run есть тема")
                 return False
         else:
             for para in file.paragraphs[ind_content:]:
@@ -440,7 +440,7 @@ def get_font_is_ok(file_name):
                         if run.font.name == ok_font:
                             font_is_ok = True
                         else:
-                            print(f"Ошибка неправильный шрифт в run {shorten(para.text)}")
+                            #print(f"Ошибка неправильный шрифт в run {shorten(para.text)}")
                             return False
                     elif run.style.font.name is not None:
                         style = run.style
@@ -448,13 +448,13 @@ def get_font_is_ok(file_name):
                             if theme_is_ok:
                                 font_is_ok = True
                             else:
-                                print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
+                                #print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
                                 return False
                         else:
                             if style.font.name == ok_font:
                                 font_is_ok = True
                             else:
-                                print(f"Ошибка в стиле run {shorten(para.text)}")
+                                #print(f"Ошибка в стиле run {shorten(para.text)}")
                                 return False
                     # elif run.style.font.name is None:
                     else:
@@ -462,7 +462,7 @@ def get_font_is_ok(file_name):
                             if theme_is_ok:
                                 font_is_ok = True
                             else:
-                                print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
+                                #print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
                                 return False
                         else:
                             if run.style.base_style is not None and run.style.base_style.font.name is not None:
@@ -476,12 +476,12 @@ def get_font_is_ok(file_name):
                                             # todo: check it
                                             break
                                         else:
-                                            print(f"Ошибка в родительском стиле run есть тема {shorten(para.text)}")
+                                            #print(f"Ошибка в родительском стиле run есть тема {shorten(para.text)}")
                                             return False
                                     else:
                                         font = style.font.name
                                 if font != ok_font:
-                                    print(f"Ошибка не тот шрифт в родительском стиле run {shorten(para.text)}")
+                                    #print(f"Ошибка не тот шрифт в родительском стиле run {shorten(para.text)}")
                                     return False
                             else:
                                 style = para.style
@@ -492,7 +492,7 @@ def get_font_is_ok(file_name):
                                             # todo: не используется font_is_ok - исправить
                                             font_is_ok = True
                                         else:
-                                            print(f"Ошибка в стиле параграфа есть тема {shorten(para.text)}")
+                                            #print(f"Ошибка в стиле параграфа есть тема {shorten(para.text)}")
                                             return False
                                 while font is None:
                                     style = style.base_style
@@ -500,15 +500,14 @@ def get_font_is_ok(file_name):
                                         if theme_is_ok:
                                             font_is_ok = True
                                         else:
-                                            print(
-                                                f"Ошибка в родительском стиле параграфа есть тема {shorten(para.text)}")
+                                            #print(f"Ошибка в родительском стиле параграфа есть тема {shorten(para.text)}")
                                             return False
                                     else:
                                         font = style.font.name
                                 if font == ok_font:
                                     font_is_ok = True
                                 else:
-                                    print(f"Ошибка в стиле параграфе не тот шрифт {shorten(para.text)}")
+                                    #print(f"Ошибка в стиле параграфе не тот шрифт {shorten(para.text)}")
                                     return False
 
     return font_is_ok
@@ -550,7 +549,7 @@ def alignment_is_ok(file_name):
                         #print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
-                        print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
+                        #print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
                 else:
                     style = para.style
                     alignment = para.style.paragraph_format.alignment
@@ -562,7 +561,7 @@ def alignment_is_ok(file_name):
                         #print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
-                        print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
+                        #print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
             else:
                 if para.alignment:
                     if para.alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
@@ -570,7 +569,7 @@ def alignment_is_ok(file_name):
                         #print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
-                        print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
+                        #print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
                 else:
                     style = para.style
                     alignment = para.style.paragraph_format.alignment
@@ -582,7 +581,7 @@ def alignment_is_ok(file_name):
                         #print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
-                        print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
+                        #print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
         elif para.text == "\n":
             alignment_ok = True
         if not alignment_ok:
@@ -602,7 +601,7 @@ def line_spacing_is_ok(file_name):
                     line_spacing_ok = True
                 else:
                     line_spacing_ok = False
-                    print(f"Это параграф с неправильным межстрочным интервалом: {shorten(para.text)}")
+                    # print(f"Это параграф с неправильным межстрочным интервалом: {shorten(para.text)}")
             else:
                 style = para.style
                 line_spacing = style.paragraph_format.line_spacing_rule
@@ -613,7 +612,7 @@ def line_spacing_is_ok(file_name):
                     line_spacing_ok = True
                 else:
                     line_spacing_ok = False
-                    print(f"Это параграф неправильным стилем и межстрочным интервалом: {shorten(para.text)}")
+                    # print(f"Это параграф неправильным стилем и межстрочным интервалом: {shorten(para.text)}")
         elif para.text == "\n":
             alignment_ok = True
         if not line_spacing_ok:
@@ -626,12 +625,12 @@ def line_spacing_is_ok(file_name):
 
 # ======================================================================
 
-# TODO Обязательно раскоментировать!
-# if __name__ == "__main__":
-#     import tkinter as tk
-#     from tkinter import filedialog
-#
-#     root = tk.Tk()
-#     root.withdraw()
-#     file_path = filedialog.askopenfilename()
-#     print(file_check_interface(file_path, mock=False))
+
+if __name__ == "__main__":
+    import tkinter as tk
+    from tkinter import filedialog
+
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename()
+    print(file_check_interface(file_path, mock=False))
