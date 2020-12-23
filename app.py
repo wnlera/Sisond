@@ -41,7 +41,7 @@ def whats_wrong(review_id):
     review_id = str(review_id)
     mem_file = app.mem_file_manager.get_file(review_id)
     if mem_file is None:
-        return make_response("", 404)
+        return make_response("", 410)
     attachment_filename = f"Review_{mem_file.name}"
     return send_file(mem_file.file, mimetype=app.mime, as_attachment=True, attachment_filename=attachment_filename)
 
