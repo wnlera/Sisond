@@ -55,6 +55,18 @@
 {#<footer>#}
 {#    <p>Made with &hearts; by <a href="https://vk.com/dream2904" target="_blank" >Valeria Timofeeva</a> </p>#}
 {#</footer>#}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <br>
+      <br>
+      Результаты проверок:
+    <ul class=flashes>
+    {% for message in messages %}
+      <li><a href="//{{ message }}">Нажмите, чтобы скачать детализацию по отправленному файлу</a></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
