@@ -13,6 +13,9 @@ var filenameStr = "";
 
 var $resultBg = $("#result-bg");
 
+// var timeout_t = 15000;
+var timeout_t = 99999999;
+
 const separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
 // highlight drag area
@@ -40,6 +43,7 @@ $fileInput.on('change', function() {
         }
         else{
             //todo: удалять неправильный файл
+            //todo: проверять размер файла перед отправкой - не более 25 мб
             //alert("Кажется, вам удалось прикрепить неверный файл. Ничего работать не будет. Обновите страницу.");
             $textContainer.text("Выберите файл .doc или .docx");
         }
@@ -52,17 +56,18 @@ $fileInput.on('change', function() {
 const wait_result_div = "<div class='spinner'><div></div><div></div></div>";
 const ok_result_div = "<span class=\"animated zoomIn\"><span style=\"color: forestgreen\">&#10004;</span></span>";
 const bad_result_div = "<span class=\"animated zoomIn\"><span style=\"color: darkred\">&#10006;</span></span>";
+const info_result_div = "<span id='result-link'></span>"
 var listEntries = [];
 
 class ListEntry{
     state;
     text;
     desc;
-    constructor(root, text, desc) {
+    constructor(root, text, desc, state) {
         let elem = document.createElement("li");
         this.text = text;
         this.documentID = root.appendChild(elem);
-        this.state = 0;
+        this.state = state;
         this.desc = desc;
         this.update();
         listEntries.push(this);
@@ -97,6 +102,16 @@ class ListEntry{
                 newText += " - " + this.desc;
                 break;
             }
+            case 3:
+            {
+                newAppearance = info_result_div;
+                break;
+            }
+            case -1:
+            {
+                newAppearance = "";
+                break;
+            }
         }
         this.documentID.innerHTML = newAppearance + separator + newText;
     }
@@ -107,18 +122,28 @@ class ListEntry{
 function fillList() {
     let root = document.getElementById("results-elements");
     for (let i = 0; i < names.length; i++){
-        setTimeout(() => addElementToList(root, names[i], descs[i]), i * 5);
-        //todo: remove timeout
+        addElementToList(root, names[i], descs[i], 0)
     }
+    // todo: bad spacers
+    addElementToList(root,"","",-1)
+    addElementToList(root,"","",-1)
+    addElementToList(root,"","",-1)
+    addElementToList(
+        root,
+        "",
+        "",
+        3)
 }
 
-function addElementToList(root, item, desc){
-    new ListEntry(root, item, desc);
+function addElementToList(root, item, desc, state){
+    new ListEntry(root, item, desc, state);
 }
 
 // 0 - wait
 // 1 - ok
 // 2 - bad
+// 3 - info
+// -1 - empty
 function setDotAppearance(dotInd, newstate){
     listEntries[dotInd].setState(newstate);
 }
@@ -153,7 +178,7 @@ let names = [
     "Выравнивание",
     "Междустрочный интервал",
     "Названия таблиц",
-    "Названия рисунков",
+    "Названия рисунков"
 ];
 
 let descs = [
@@ -171,9 +196,17 @@ fillList(names, descs);
 // 0 - wait
 // 1 - ok
 // 2 - bad
+// 3 - info
+
+function setLink(link) {
+    console.log("setlink: " + link)
+    link_obj = document.createElement("a");
+    link_obj.textContent = "Скачать детализированный отчёт";
+    link_obj.href = "//" + link;
+    document.getElementById("result-link").appendChild(link_obj);
+}
 
 function SendFile() {
-    // https://demo2398178.mockable.io
     var fd = new FormData(document.querySelector("form"));
     // fd.append("CustomField", "This is some extra data");
     $.ajax({
@@ -188,13 +221,12 @@ function SendFile() {
             if (typeof data === "string") {
                 data = JSON.parse(data);
             }
-            let ok = true;
-            for (let i = 0; i < data.length; i++){
-                if (data[i] === 2){
-                    ok = false;
-                }
-                setTimeout(() => listEntries[i].setState(data[i]), i * 200);
+            console.log(data)
+
+            for (let i = 0; i < data["results"].length; i++){
+                setTimeout(() => listEntries[i].setState(data["results"][i]), i * 200);
             }
+            setTimeout(() => setLink(data["fileUrl"]), data["results"].length * 210);
             // setTimeout(() => updateBackground(ok), data.length * 200 + 150)
 
         },
@@ -213,7 +245,7 @@ function SendFile() {
             return false;
             //============================
         },
-        timeout: 15000
+        timeout: timeout_t
     });
 }
 
