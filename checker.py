@@ -311,7 +311,7 @@ def get_font_is_ok(file: ExtendedDocument):
                             if run.style.base_style is not None and run.style.base_style.font.name is not None:
                                 font = run.style.font.name
                                 style = run.style
-                                while font is None:
+                                while font is None and style.base_style:
                                     style = style.base_style
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
@@ -343,7 +343,7 @@ def get_font_is_ok(file: ExtendedDocument):
                                             highlight_mistake(Mistakes.FONTS, paragraph=para)
                                             font_is_ok = False
                                             # return False
-                                while font is None:
+                                while font is None and style.base_style:
                                     style = style.base_style
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
@@ -385,7 +385,7 @@ def alignment_is_ok(doc: ExtendedDocument):
                 else:
                     style = para.style
                     alignment = para.style.paragraph_format.alignment
-                    while alignment is None:
+                    while alignment is None and style.base_style:
                         style = style.base_style
                         alignment = style.paragraph_format.alignment
                     if alignment == WD_ALIGN_PARAGRAPH.CENTER:
@@ -441,7 +441,7 @@ def line_spacing_is_ok(doc: ExtendedDocument):
             else:
                 style = para.style
                 line_spacing = style.paragraph_format.line_spacing_rule
-                while line_spacing is None:
+                while line_spacing is None and style.base_style:
                     style = style.base_style
                     line_spacing = style.paragraph_format.line_spacing_rule
                 if line_spacing == WD_LINE_SPACING.ONE_POINT_FIVE:
