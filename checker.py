@@ -19,11 +19,11 @@ from FormatChecker import Mistakes, MistakeType, highlight_mistake
 from FormatChecker.Utils.xml import *
 
 
-def file_check_interface(file, mock=True) -> CheckResults:
+def file_check_interface(file, selected_boxes, mock=True) -> CheckResults:
     file = BytesIO(file.read())
     if mock:
         return mock_return()
-    return check_file(file)
+    return check_file(file, selected_boxes)
 
 def mock_return():
     is_wrong = random.random() < 0.4
@@ -37,16 +37,46 @@ def mock_return():
 
 
 # ======================================================================
-def check_file(file_like):
+def check_file(file_like, selected_boxes):
     file = ExtendedDocument(file_like)
 
     verifiable_paras = []
     for para in file.docx.paragraphs[file.safe_table_of_content_index:]:
         verifiable_paras.append(para.text)  # todo: переделать, хранить копию документа не оч
 
-    result = [file.table_of_content_index is not None, get_margin_is_ok(file.docx), get_font_is_ok(file),
-              alignment_is_ok(file),
-              line_spacing_is_ok(file), tables_is_ok(file.docx, verifiable_paras), pics_is_ok(file.docx, verifiable_paras)]
+    result = []
+    # result = [file.table_of_content_index is not None, get_margin_is_ok(file.docx), get_font_is_ok(file),
+    #           alignment_is_ok(file),
+    #           line_spacing_is_ok(file), tables_is_ok(file.docx, verifiable_paras), pics_is_ok(file.docx, verifiable_paras)]
+    if '0' in selected_boxes:
+        result.append(file.table_of_content_index is not None)
+    else:
+        result.append(4)
+    if '1' in selected_boxes:
+        result.append(get_margin_is_ok(file.docx))
+    else:
+        result.append(4)
+    if '2' in selected_boxes:
+        result.append(get_font_is_ok(file))
+    else:
+        result.append(4)
+    if '3' in selected_boxes:
+        result.append(alignment_is_ok(file))
+    else:
+        result.append(4)
+    if '4' in selected_boxes:
+        result.append(line_spacing_is_ok(file))
+    else:
+        result.append(4)
+    if '5' in selected_boxes:
+        result.append(tables_is_ok(file.docx, verifiable_paras))
+    else:
+        result.append(4)
+    if '6' in selected_boxes:
+        result.append(pics_is_ok(file.docx, verifiable_paras))
+    else:
+        result.append(4)
+
 
     result = list(map(int, result))
 
@@ -149,7 +179,8 @@ def get_margin_is_ok(file: Document):
                 abs(section.top_margin.cm - 2) > 0.001 or \
                 abs(section.left_margin.cm - 3) > 0.001 or \
                 abs(section.right_margin.cm - 1) > 0.001:
-            max_par = min(len(file.paragraphs), 3)
+            # max_par = min(len(file.paragraphs), 3)
+            max_par = 1
             highlight_mistake(Mistakes.MARGIN, paragraphs=file.paragraphs[:max_par])
             return False
     return True
@@ -311,7 +342,7 @@ def get_font_is_ok(file: ExtendedDocument):
                             if run.style.base_style is not None and run.style.base_style.font.name is not None:
                                 font = run.style.font.name
                                 style = run.style
-                                while font is None:
+                                while font is None and style.base_style:
                                     style = style.base_style
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
@@ -343,7 +374,7 @@ def get_font_is_ok(file: ExtendedDocument):
                                             highlight_mistake(Mistakes.FONTS, paragraph=para)
                                             font_is_ok = False
                                             # return False
-                                while font is None:
+                                while font is None and style.base_style:
                                     style = style.base_style
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
@@ -385,7 +416,7 @@ def alignment_is_ok(doc: ExtendedDocument):
                 else:
                     style = para.style
                     alignment = para.style.paragraph_format.alignment
-                    while alignment is None:
+                    while alignment is None and style.base_style:
                         style = style.base_style
                         alignment = style.paragraph_format.alignment
                     if alignment == WD_ALIGN_PARAGRAPH.CENTER:
@@ -441,7 +472,7 @@ def line_spacing_is_ok(doc: ExtendedDocument):
             else:
                 style = para.style
                 line_spacing = style.paragraph_format.line_spacing_rule
-                while line_spacing is None:
+                while line_spacing is None and style.base_style:
                     style = style.base_style
                     line_spacing = style.paragraph_format.line_spacing_rule
                 if line_spacing == WD_LINE_SPACING.ONE_POINT_FIVE:
