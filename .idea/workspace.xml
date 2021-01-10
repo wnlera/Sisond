@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="709df681-bc01-4133-a056-ea2ca63e892c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FormatChecker/Highlighter.py" beforeDir="false" afterPath="$PROJECT_DIR$/FormatChecker/Highlighter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/checker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MemFiles/MemFile.py" beforeDir="false" afterPath="$PROJECT_DIR$/MemFiles/MemFile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MemFiles/MemFileManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/MemFiles/MemFileManager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -242,7 +239,7 @@
       <workItem from="1608671460568" duration="32233000" />
       <workItem from="1608724455995" duration="210000" />
       <workItem from="1608887589356" duration="1464000" />
-      <workItem from="1610283952101" duration="10983000" />
+      <workItem from="1610283952101" duration="13272000" />
     </task>
     <servers />
   </component>
@@ -279,7 +276,7 @@
     <SUITE FILE_PATH="coverage/Sisond$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1589836312724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Sisond$checker.coverage" NAME="checker Coverage Results" MODIFIED="1608671787025" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$wsgi.coverage" NAME="wsgi Coverage Results" MODIFIED="1587311473741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Sisond$Sisond.coverage" NAME="Sisond Coverage Results" MODIFIED="1610294981137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Sisond$Sisond.coverage" NAME="Sisond Coverage Results" MODIFIED="1610299322705" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$docx_check.coverage" NAME="docx_check Coverage Results" MODIFIED="1589060597111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$pdf.coverage" NAME="pdf Coverage Results" MODIFIED="1589486029352" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

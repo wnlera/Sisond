@@ -15,12 +15,11 @@ class MemFileManager:
             raise ValueError("uuid collision!")
 
     def get_file(self, uuid):
+        self.remove_timeout_files()
         if uuid not in self.__files:
             return None
-        file = self.__files.pop(uuid)
-        if file.expired:
-            file.wipe()
-            return None
+        file = self.__files[uuid]
+        file.file.seek(0)
         return file
 
     def remove_timeout_files(self):
