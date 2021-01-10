@@ -15,12 +15,15 @@ app.mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 @app.route('/', methods=["GET", "POST"])
 def hello_world():
     if request.method == "POST":
+        selected_boxes = request.form.getlist("parameters_checkbox")
+        print(selected_boxes)
         try:
             file = request.files['userDocument']
             sec_name = secure_filename(file.filename)
             print(f"Received file {sec_name}")
             uid = uuid.uuid4().hex
-            res = checker.file_check_interface(file, mock=False)
+            # res = checker.file_check_interface(file, mock=False)
+            res = checker.file_check_interface(file, selected_boxes, mock=False)
             link = f"{request.host}{url_for('whats_wrong', review_id=uid)}"
             json_resp = res.json_result(link)
             print(link)

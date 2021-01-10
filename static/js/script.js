@@ -56,6 +56,7 @@ $fileInput.on('change', function() {
 const wait_result_div = "<div class='spinner'><div></div><div></div></div>";
 const ok_result_div = "<span class=\"animated zoomIn\"><span style=\"color: forestgreen\">&#10004;</span></span>";
 const bad_result_div = "<span class=\"animated zoomIn\"><span style=\"color: darkred\">&#10006;</span></span>";
+const not_check_result_div = "<span class=\"animated zoomIn\"><span style=\"color: yellow\">&#9888;</span></span>";
 const info_result_div = "<span id='result-link'></span>"
 var listEntries = [];
 
@@ -112,6 +113,12 @@ class ListEntry{
                 newAppearance = "";
                 break;
             }
+            case 4:
+            {
+                newAppearance = not_check_result_div;
+                break;
+            }
+
         }
         this.documentID.innerHTML = newAppearance + separator + newText;
     }
@@ -144,6 +151,7 @@ function addElementToList(root, item, desc, state){
 // 2 - bad
 // 3 - info
 // -1 - empty
+// 4 - not checked
 function setDotAppearance(dotInd, newstate){
     listEntries[dotInd].setState(newstate);
 }

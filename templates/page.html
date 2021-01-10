@@ -27,11 +27,34 @@
 <!--TODO: добавить label-->
 <form id="form" method="post" enctype="multipart/form-data">
 
+
+
 <div id="dragndrop" class="file-drop-area">
     <span class="fake-btn button -regular center">Выберите файл</span>
     <span class="file-msg">или перетащите его сюда</span>
     <input type="file" name="userDocument" accept="application/msword, .docx" class="file-input">
 </div>
+
+<div id = "checkboxes" style="color: #3e3e4d; font-size: 16px; text-align: left; margin-left: 3%; margin-bottom: 2%">
+    <h3>Проверяемые параметры:</h3>
+    <form method = "POST" action="/">
+        <input type="checkbox" id = "contents" value="0" name="parameters_checkbox" style="margin-left: 1%" checked>
+        <label for="contents">Автосодержание</label>
+        <input type="checkbox" id = "field" value="1" name="parameters_checkbox" style="margin-left: 1%" checked>
+        <label for="field">Поля</label>
+        <input type="checkbox" id = "font" value="2" name="parameters_checkbox" style="margin-left: 1%" checked>
+        <label for="font">Шрифт</label>
+        <input type="checkbox" id = "alignment" value="3" name="parameters_checkbox" style="margin-left: 1%" checked>
+        <label for="alignment">Выравнивание</label>
+        <input type="checkbox" id = "auto" value="4" name="parameters_checkbox" style="margin-left: 1%" checked>
+        <label for="auto">Междустрочный интервал</label>
+        <input type="checkbox" id = "table" value="5" name="parameters_checkbox" style="margin-left: 1%" checked>
+        <label for="table">Названия таблиц</label>
+        <input type="checkbox" id = "img" value="6" name="parameters_checkbox" style="margin-left: 1%" checked>
+        <label for="img">Названия рисунков</label>
+    </form>
+</div>
+
 
 <div id="results" class="list-bg hidden">
     <h2 id="filename" class="hidden">Если вы это видите, обновите страницу</h2>

@@ -13,7 +13,7 @@ class MistakeType:
 
 class Mistakes:
     IND_CONTENT = MistakeType("Нет титульной страницы", color=WD_COLOR_INDEX.RED, weight=0)
-    MARGIN = MistakeType("Неправильные отступы", color=WD_COLOR_INDEX.RED, weight=1)
+    MARGIN = MistakeType("Неправильные поля", color=WD_COLOR_INDEX.RED, weight=1)
     LINE_SPACING = MistakeType("Неправильный межстрочный интервал", color=WD_COLOR_INDEX.RED, weight=2)
     ALIGNMENT = MistakeType("Неправильное выравнивание", color=WD_COLOR_INDEX.RED, weight=3)
     TABLES = MistakeType("Неверно оформленная таблица", color=WD_COLOR_INDEX.RED, weight=4)
@@ -25,7 +25,7 @@ def highlight_mistake(mistakeType: MistakeType, paragraph: Paragraph=None, parag
                       additional_info: str=""):
     if paragraphs is None:
         paragraphs = [paragraph]
-    if paragraph is None:
+    if paragraph is None and not Mistakes.MARGIN:
         raise ValueError("Не было передано фрагмента документа")
     print(mistakeType.description)
     msg = mistakeType.description + additional_info
