@@ -19,7 +19,6 @@ class MemFileManager:
         if uuid not in self.__files:
             return None
         file = self.__files[uuid]
-        file.file.seek(0)
         return file
 
     def remove_timeout_files(self):

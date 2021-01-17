@@ -13,3 +13,4 @@ python-docx==0.8.10
 texttable==1.6.2
 Werkzeug==1.0.0
 wincertstore==0.2
+transliterate==1.10.2
