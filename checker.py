@@ -15,7 +15,7 @@ from typing import Union, List
 from io import BytesIO
 
 from FormatChecker.CheckResults import CheckResults
-from FormatChecker import Mistakes, MistakeType, highlight_mistake
+from FormatChecker import Mistakes, MistakeType, highlight_mistake, clear_registry, apply_highlight
 from FormatChecker.Utils.xml import *
 
 
@@ -39,7 +39,7 @@ def mock_return():
 # ======================================================================
 def check_file(file_like, selected_boxes):
     file = ExtendedDocument(file_like)
-
+    clear_registry()
     verifiable_paras = []
     for para in file.docx.paragraphs[file.safe_table_of_content_index:]:
         verifiable_paras.append(para.text)  # todo: переделать, хранить копию документа не оч
@@ -77,7 +77,7 @@ def check_file(file_like, selected_boxes):
     else:
         result.append(4)
 
-
+    apply_highlight()
     result = list(map(int, result))
 
     for i in range(len(result)):

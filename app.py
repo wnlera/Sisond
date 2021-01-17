@@ -4,13 +4,15 @@ import json
 import checker
 import uuid
 import os
+from transliterate import translit
+from transliterate.exceptions import LanguageDetectionError
 
 import config
 from MemFiles import MemFileManager, MemFile
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 app.secret_key = config.secret
-app.mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+app.mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
 @app.route('/', methods=["GET", "POST"])
 def hello_world():
@@ -19,7 +21,11 @@ def hello_world():
         print(selected_boxes)
         try:
             file = request.files['userDocument']
-            sec_name = secure_filename(file.filename)
+            try:
+                sec_name = translit(file.filename, reversed=True)
+            except LanguageDetectionError:
+                sec_name = file.filename
+            sec_name = secure_filename(sec_name)
             print(f"Received file {sec_name}")
             uid = uuid.uuid4().hex
             # res = checker.file_check_interface(file, mock=False)
