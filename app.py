@@ -61,7 +61,7 @@ def startup():
 
 
 if __name__ == '__main__':
-    app.run("0.0.0.0")
+    app.run(host='0.0.0.0')
 
 # todo: использовать только review_id или только uid
 # todo: использовать только link или только url
