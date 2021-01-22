@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="709df681-bc01-4133-a056-ea2ca63e892c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/page.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,12 +182,12 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Flask server.Sisond" />
-      <item itemvalue="Flask server.Flask (app.py)" />
       <item itemvalue="Python.checker" />
       <item itemvalue="Python.docx_check" />
       <item itemvalue="Python.pdf" />
       <item itemvalue="Python.wsgi" />
+      <item itemvalue="Flask server.Flask (app.py)" />
+      <item itemvalue="Flask server.Sisond" />
     </list>
     <recent_temporary>
       <list>
@@ -242,7 +241,7 @@
       <workItem from="1610913315235" duration="8151000" />
       <workItem from="1611328493026" duration="3138000" />
       <workItem from="1611333428603" duration="2392000" />
-      <workItem from="1611343471568" duration="1135000" />
+      <workItem from="1611343471568" duration="1889000" />
     </task>
     <servers />
   </component>
