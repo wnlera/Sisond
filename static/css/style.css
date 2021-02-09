@@ -183,6 +183,15 @@ a:hover, a:visited:hover {
     flex-wrap: wrap;
     justify-content: center;
 }*/
+
+.col-1-2 {
+  width: 50%;
+  float: left;
+}
+.col-1 {
+  width: 100%;
+  float: left;
+}
 .button {
     display: flex;
     overflow: hidden;

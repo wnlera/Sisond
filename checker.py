@@ -119,7 +119,12 @@ def iter_block_items(parent: Union[Document, _Cell]):
         raise TypeError(f"Expected Document or _Cell instance, but instead got {type(parent)}")
 
     for child in parent_elm.iterchildren():
-        DOMTree = parseString(child.xml)  # TODO: тут поле для оптимизаций
+        try:
+            DOMTree = parseString(child.xml)  # TODO: тут поле для оптимизаций
+        except AttributeError:
+            continue
+        except TypeError:
+            continue
         data = DOMTree.documentElement
         nodelist = data.getElementsByTagName('pic:blipFill')  # TODO: а что насчет формул? Mathtype и вордовские
         if len(nodelist) >= 1:
@@ -178,7 +183,7 @@ def get_margin_is_ok(file: Document):
         if abs(section.bottom_margin.cm - 2) > 0.001 or \
                 abs(section.top_margin.cm - 2) > 0.001 or \
                 abs(section.left_margin.cm - 3) > 0.001 or \
-                abs(section.right_margin.cm - 1) > 0.001:
+                abs(section.right_margin.cm - 1.5) > 0.001:
             # max_par = min(len(file.paragraphs), 3)
             max_par = 1
             highlight_mistake(Mistakes.MARGIN, paragraphs=file.paragraphs[:max_par])
@@ -488,8 +493,6 @@ def line_spacing_is_ok(doc: ExtendedDocument):
     return line_spacing_ok
 
 
-
-# print(check_file("Практика_отчет — копия.docx"))
 
 # ======================================================================
 
