@@ -15,92 +15,105 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 </head>
+
 <body>
+
 <div id="result-bg" class="bg"></div>
 
-
-<h1>Проверка на ГОСТv2</h1>
-<h4 style="color: #524d4d; font-size: 20px; text-align: center">Сервис работает в тестовом режиме и <strong>сохраняет</strong> отправленные файлы.</h4>
-<h5 style="color: #524d4d; font-size: 16px; text-align: center">Мы обещаем использовать ваши файлы только в целях тестирования для улучшения работы сервиса. Отправляя нам файл, вы соглашаетесь на его хранение и обработку.</h5>
-<h5 style="color: #3e3e4d; font-size: 16px; text-align: center"><a href="https://docs.google.com/forms/d/e/1FAIpQLSerVGHHzotanL6uEY6EbglAqwdH_jHTg7ciGK7Qw3wQt1AJDw/viewform?usp=sf_link" target="_blank">Помогите сделать его лучше и <u>нажмите тут</u> 😊 </a></h5>
-
-<!--TODO: добавить label-->
 <form id="form" method="post" enctype="multipart/form-data">
 
-{#<div id="dragndrop" class="file-drop-area">#}
-{#    <span class="fake-btn button -regular center">Выберите файл</span>#}
-{#    <span class="file-msg">или перетащите его сюда</span>#}
-{#    <input type="file" name="userDocument" accept="application/msword, .docx" class="file-input">#}
-{#</div>#}
 <div class="main">
   <div class="container">
     <div class="row">
-{#      <div class="col-1-2">#}
-        <div id="dragndrop" class="file-drop-area">
-        <span class="fake-btn button -regular center">Выберите файл</span>
-        <span class="file-msg">или перетащите его</span>
-        <input type="file" name="userDocument" accept="application/msword, .docx" class="file-input">
+        <div class="col-sm">
+            <h1 style="margin-bottom: 2%">Проверка на ГОСТv2</h1>
         </div>
-{#      </div>#}
-{#      <div class="col-1-2">#}
-{#        <h2 style="margin-bottom: 4%; margin-top: 0; margin-left: 2%">Как это работает</h2>#}
-{#        <h3 style="color: #3e3e4d; font-size: 18px; margin-bottom: 2%; margin-top: 0; margin-left: 2%">Нужно загрузить документ только в формате .docx</h3>#}
-{#        <h3 style="color: #3e3e4d; font-size: 18px; margin-bottom: 3%; margin-top: 0; margin-left: 2%">Документ будет проверяться по следующим критериям:</h3>#}
-{#        <ol style="color: #3e3e4d; font-size: 18px; margin-bottom: 0; margin-top: 0; margin-left: 0">#}
-{#	    <li style="margin-bottom: 1%; margin-left: 3%">В документе должно быть автосодержание, без него проверка может осуществляться некорректно из-за различных титульных листов</li>#}
-{#	    <li style="margin-bottom: 1%; margin-left: 3%">Шрифт - &quot;Times New Roman&quot;</li>#}
-{#	    <li style="margin-bottom: 1%; margin-left: 3%">Междустрочный интервал - 1.5</li>#}
-{#	    <li style="margin-bottom: 1%; margin-left: 3%">Названия рисунков выравнены по центрцу, в формате &quot;Рисунок 1.2 - Название&quot;</li>#}
-{#	    <li style="margin-bottom: 1%; margin-left: 3%">Названия таблиц выравнены по ширине, без абзацного отступа и в формате &quot;Таблица 1.1 - Название&quot;</li>#}
-{#	    <li style="margin-bottom: 1%; margin-left: 3%">Поля: левое - 3 см, правое - 1 см, верхнее и нижнее - 2 см</li>#}
-{#        </ol>#}
-{#      </div>#}
-        <div class="col-1">
-         <div id = "checkboxes" style="color: #3e3e4d; font-size: 16px; text-align: left; margin-left: 3%; margin-bottom: 2%">
-            <h3>Проверяемые параметры:</h3>
-            <form method = "POST" action="/">
-            <input type="checkbox" id = "contents" value="0" name="parameters_checkbox" style="margin-left: 1%" checked>
-            <label for="contents">Автосодержание</label>
-            <input type="checkbox" id = "field" value="1" name="parameters_checkbox" style="margin-left: 1%" checked>
-            <label for="field">Поля</label>
-            <input type="checkbox" id = "font" value="2" name="parameters_checkbox" style="margin-left: 1%" checked>
-            <label for="font">Шрифт</label>
-            <input type="checkbox" id = "alignment" value="3" name="parameters_checkbox" style="margin-left: 1%" checked>
-            <label for="alignment">Выравнивание</label>
-            <input type="checkbox" id = "auto" value="4" name="parameters_checkbox" style="margin-left: 1%" checked>
-            <label for="auto">Междустрочный интервал</label>
-            <input type="checkbox" id = "table" value="5" name="parameters_checkbox" style="margin-left: 1%" checked>
-            <label for="table">Названия таблиц</label>
-            <input type="checkbox" id = "img" value="6" name="parameters_checkbox" style="margin-left: 1%" checked>
-            <label for="img">Названия рисунков</label>
-            </form>
-        </div>
-   </div>
-</div></div></div>
+    </div>
+    <div class="row">
+      <div class="col-sm" style="border-right: 1px solid; margin-right: 2%">
+        <h3 style="color: #3e3e4d; text-align: left; margin-bottom: 2%">Информация</h3>
+        <h4 style="color: #3e3e4d; margin-bottom: 2%; margin-top: 0;">Требования к загружаемому файлу</h4>
+        <ol style="color: #3e3e4d;">
+            <li>Файл сделан в Microsoft Word 2010 и выше</li>
+            <li>Формат файла только .docx</li>
+        </ol>
+        <h4 style="color: #3e3e4d; margin-bottom: 3%; margin-top: 0;">Проверяемые критерии</h4>
+        <ol style="color: #3e3e4d;">
+	    <li style="margin-bottom: 1%;">В документе должно быть автосодержание, без него проверка может осуществляться некорректно из-за различных титульных листов</li>
+	    <li style="margin-bottom: 1%;">Шрифт - &quot;Times New Roman&quot;</li>
+	    <li style="margin-bottom: 1%;">Междустрочный интервал - 1.5</li>
+	    <li style="margin-bottom: 1%;">Названия рисунков выравнены по центру, в формате &quot;Рисунок 1.2 - Название&quot;</li>
+	    <li style="margin-bottom: 1%;">Названия таблиц выравнены по ширине, без абзацного отступа и в формате &quot;Таблица 1.1 - Название&quot;</li>
+	    <li style="margin-bottom: 1%;">Поля: левое - 3 см, правое - 1 см, верхнее и нижнее - 2 см</li>
+        </ol>
+
+        <h4 style="color: #3e3e4d; margin-bottom: 2%; margin-top: 0;">Дополнительно</h4>
+        Сервис временно <strong>хранит</strong> отправленные файлы
+        <br>
+        Файлы будут использоваться для улучшения сервиса
+        <h4 style="color: #3e3e4d; margin-bottom: 2%; margin-top: 1%;">Форма обратной связи</h4>
+        Пожалуйста, после проверки документа, пройдите небольшой опрос. Он поможет сделать сервис лучше и удобнее.
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSerVGHHzotanL6uEY6EbglAqwdH_jHTg7ciGK7Qw3wQt1AJDw/viewform?usp=sf_link" target="_blank">Ссылка на опрос.</a>
 
 
-<div id="results" class="list-bg hidden">
+
+      </div>
+      <div class="col-sm">
+
+          <div class="row">
+              <div id = "checkboxes" style="color: #3e3e4d; text-align: left; margin-bottom: 2%">
+                <h3>Проверяемые параметры:</h3>
+                <form method = "POST" action="/">
+                <input type="checkbox" id = "contents" value="0" name="parameters_checkbox" style="margin-left: 1%" checked>
+                <label for="contents">Автосодержание</label>
+                <input type="checkbox" id = "field" value="1" name="parameters_checkbox" style="margin-left: 1%" checked>
+                <label for="field">Поля</label>
+                <input type="checkbox" id = "font" value="2" name="parameters_checkbox" style="margin-left: 1%" checked>
+                <label for="font">Шрифт</label>
+                <input type="checkbox" id = "alignment" value="3" name="parameters_checkbox" style="margin-left: 1%" checked>
+                <label for="alignment">Выравнивание</label>
+                <br>
+                <input type="checkbox" id = "auto" value="4" name="parameters_checkbox" style="margin-left: 1%" checked>
+                <label for="auto">Междустрочный интервал</label>
+                <input type="checkbox" id = "table" value="5" name="parameters_checkbox" style="margin-left: 1%" checked>
+                <label for="table">Названия таблиц</label>
+                <input type="checkbox" id = "img" value="6" name="parameters_checkbox" style="margin-left: 1%" checked>
+                <label for="img">Названия рисунков</label>
+                </form>
+              </div>
+          </div>
+
+
+          <div class="row">
+            <div id="dragndrop" class="file-drop-area">
+            <span class="fake-btn button -regular center">Выберите файл</span>
+            <span class="file-msg">или перетащите его</span>
+            <input type="file" name="userDocument" accept="application/msword, .docx" class="file-input">
+            </div>
+          </div>
+          <div id="results" class="list-bg hidden">
     <h2 id="filename" class="hidden">Если вы это видите, обновите страницу</h2>
-    <ul id="results-elements" style="list-style-type: none; color: #202129; margin-bottom: 0.25%">
+    <ul id="results-elements" style="list-style-type: none; color: #202129;">
 
     </ul>
+
 </div>
 
+
+
 <div>
-    <div id="button" class='button -regular hidden' style="width: 20%; margin: 1% auto auto;">Отправить</div>
+    <div id="button" class='button -regular hidden' style="width: 40%; margin: 1% auto auto;">Отправить</div>
 <!--    При нажатии начинать показывать список-->
 </div>
 
     <div>
-        <div id="new-file" class='button -regular hidden' style="width: 30%; margin: 5% auto auto;">Проверить другой файл</div>
+        <div id="new-file" class='button -regular hidden' style="width: 50%; margin: 5% auto auto;">Проверить другой файл</div>
         <!--    При нажатии начинать показывать список-->
     </div>
-</form>
-{##}
-{#<footer>#}
-{#    <p>Made with &hearts; by <a href="https://vk.com/dream2904" target="_blank" >Valeria Timofeeva</a> </p>#}
-{#</footer>#}
+
+
 {% with messages = get_flashed_messages() %}
   {% if messages %}
       <br>
@@ -113,6 +126,16 @@
     </ul>
   {% endif %}
 {% endwith %}
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    </div>
+  </div>
+</div>
+
+</div>
+</form>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{#<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>#}
 </body>
+
 </html>

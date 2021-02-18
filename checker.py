@@ -25,6 +25,7 @@ def file_check_interface(file, selected_boxes, mock=True) -> CheckResults:
         return mock_return()
     return check_file(file, selected_boxes)
 
+
 def mock_return():
     is_wrong = random.random() < 0.4
     res = [1 for x in range(5)]
