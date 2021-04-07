@@ -14,6 +14,7 @@ from docx.enum.text import WD_LINE_SPACING
 from typing import Union, List
 from io import BytesIO
 
+
 from FormatChecker.CheckResults import CheckResults
 from FormatChecker import Mistakes, MistakeType, highlight_mistake, clear_registry, apply_highlight
 from FormatChecker.Utils.xml import *
@@ -21,6 +22,7 @@ from FormatChecker.Utils.xml import *
 
 def file_check_interface(file, selected_boxes, mock=True) -> CheckResults:
     file = BytesIO(file.read())
+
     if mock:
         return mock_return()
     return check_file(file, selected_boxes)
@@ -41,9 +43,21 @@ def mock_return():
 def check_file(file_like, selected_boxes):
     file = ExtendedDocument(file_like)
     clear_registry()
-    verifiable_paras = []
-    for para in file.docx.paragraphs[file.safe_table_of_content_index:]:
-        verifiable_paras.append(para.text)  # todo: переделать, хранить копию документа не оч
+    verifiable_paras = file.white_paras()  # используется в трех фыункциях - таблицы, рисунки, шрифт.
+    # В таблицах и рисунках используется от сюда, в шрифте вызывается отдельно
+
+    # append = True
+    # for para in file.docx.paragraphs[file.safe_table_of_content_index:]:
+    #     para_text = para.text.strip().lower()
+    #     if "@start" in para_text:
+    #         append = False
+    #     if "@stop" in para_text:
+    #         append = True
+    #         continue
+    #     if append:
+    #         verifiable_paras.append(para.text)  # todo: переделать, хранить копию документа не оч
+
+
 
     result = []
     # result = [file.table_of_content_index is not None, get_margin_is_ok(file.docx), get_font_is_ok(file),
@@ -90,6 +104,7 @@ def check_file(file_like, selected_boxes):
     results = CheckResults(result, modified_file)
     return results
 
+
 # =========================== UTILS ================================================
 def correctness_fonttable(fonts_fonttable):
     """
@@ -104,6 +119,7 @@ def correctness_fonttable(fonts_fonttable):
             return 2
     else:
         return 0
+
 
 def iter_block_items(parent: Union[Document, _Cell]):
     """
@@ -157,6 +173,7 @@ def iter_pics_context(parent):
         # else:
         #     raise Exception("Элемент не параграф и не картинка")
 
+
 def heading_in_file(para):
     style = para.style
     heading = ['Heading 1', 'Heading 2', 'Heading 3']
@@ -171,6 +188,7 @@ def heading_in_file(para):
 def shorten(s):
     return f"\"{s}\"" if len(s) < 25 else f"\"{s[:25]}...\""
 
+
 # =========================== UTILS ================================================
 
 
@@ -181,18 +199,19 @@ def get_margin_is_ok(file: Document):
     :return: True if margins ok else False
     """
     for section in file.sections:
-        if abs(section.bottom_margin.cm - 2) > 0.001 or \
-                abs(section.top_margin.cm - 2) > 0.001 or \
-                abs(section.left_margin.cm - 3) > 0.001 or \
-                abs(section.right_margin.cm - 1.5) > 0.001:
+        if abs(section.bottom_margin.cm - 2) > 0.005 or \
+                abs(section.top_margin.cm - 2) > 0.005 or \
+                abs(section.left_margin.cm - 3) > 0.005 or \
+                abs(section.right_margin.cm - 1.5) > 0.005:
             # max_par = min(len(file.paragraphs), 3)
             max_par = 1
+            print(section.bottom_margin.cm, section.top_margin.cm, section.left_margin.cm, section.right_margin.cm)
             highlight_mistake(Mistakes.MARGIN, paragraphs=file.paragraphs[:max_par])
             return False
     return True
 
 
-def tables_is_ok(doc: Document, verifiable_paras: List[str]):
+def tables_is_ok(doc: ExtendedDocument, verifiable_paras):
     table_is_ok = False
     table_pattern = re.compile(r"Таблица \d+(\.\d+)* – .+\.")
     flag = False
@@ -207,37 +226,37 @@ def tables_is_ok(doc: Document, verifiable_paras: List[str]):
             if flag:
                 if elem[0].paragraph_format.first_line_indent == 0:
                     table_is_ok = True
-                    #print(txt, " \tХорошая таблица")
+                    # print(txt, " \tХорошая таблица")
                 elif elem[0].paragraph_format.first_line_indent is None:
                     if elem[0].style.paragraph_format.first_line_indent == 0:
                         table_is_ok = True
-                        #print(txt, " \tХорошая таблица")
+                        # print(txt, " \tХорошая таблица")
                     else:
                         table_is_ok = False
-                        #print(txt, " \tПлохая таблица")
+                        # print(txt, " \tПлохая таблица")
                         # TODO: весь метод может не сработать, если документ начинается сразу с таблицы
                         highlight_mistake(Mistakes.TABLES, paragraph=elem[0])
                         return table_is_ok
                 else:
                     table_is_ok = False
-                    #print(txt, " \tПлохая таблица")
+                    # print(txt, " \tПлохая таблица")
                     highlight_mistake(Mistakes.TABLES, paragraph=elem[0])
                     return table_is_ok
         else:
             if flag:
                 table_is_ok = False
-                #print(txt, " \tПлохая таблица")
+                # print(txt, " \tПлохая таблица")
                 highlight_mistake(Mistakes.TABLES, paragraph=elem[0])
                 return table_is_ok
             else:
                 table_is_ok = True
-                #print(txt, " \tТаблица не учитывается")
+                # print(txt, " \tТаблица не учитывается")
     if count == 0:
         table_is_ok = True
     return table_is_ok
 
 
-def pics_is_ok(doc: Document, verifiable_paras: List[str]):
+def pics_is_ok(doc: ExtendedDocument, verifiable_paras: List[str]):
     pic_is_ok = False
     pic_pattern = re.compile(r"Рисунок \d+(\.\d+)* – .+\.")
     flag = False
@@ -252,29 +271,30 @@ def pics_is_ok(doc: Document, verifiable_paras: List[str]):
             if flag:
                 if elem[0].alignment == WD_ALIGN_PARAGRAPH.CENTER:
                     pic_is_ok = True
-                    #print(txt, " \tХорошая картинка")
+                    # print(txt, " \tХорошая картинка")
                 elif elem[0].alignment is None:
                     if elem[0].style.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.CENTER:
                         pic_is_ok = True
-                        #print(txt, " \tХорошая картинка со стилем")
+                        # print(txt, " \tХорошая картинка со стилем")
                 else:
                     pic_is_ok = False
                     highlight_mistake(Mistakes.PICTURES, paragraph=elem[0])
-                    #print(txt, " \tПлохая картинка1")
+                    # print(txt, " \tПлохая картинка1")
                     return pic_is_ok
         else:
             if flag:
                 pic_is_ok = False
                 highlight_mistake(Mistakes.PICTURES, paragraph=elem[0])
-                #print(txt, " \tПлохая картинка")
+                # print(txt, " \tПлохая картинка")
                 return pic_is_ok
             else:
                 pic_is_ok = True
-                #print(txt, " \tКартинка не учитывается")
+                # print(txt, " \tКартинка не учитывается")
     if count == 0:
         pic_is_ok = True
 
     return pic_is_ok
+
 
 def get_font_is_ok(file: ExtendedDocument):
     """
@@ -288,7 +308,8 @@ def get_font_is_ok(file: ExtendedDocument):
     theme_is_ok = get_default_font_is_ok(file.xml_theme1_tree, file.xml_doc_text)
 
     ok_font = 'Times New Roman'
-    font_is_ok = False  # todo: переделать логику - сделать по умолчанию True и убирать при ошибках
+    font_is_ok = True  # todo: переделать логику - сделать по умолчанию True и убирать при ошибках
+    font_statuses = []
     if font_table == 0:
         print("Ошибка в таблице стилей")
         # весь текст с неправильным шрифтом, кажется
@@ -296,53 +317,67 @@ def get_font_is_ok(file: ExtendedDocument):
 
     elif font_table == 1:
         font_is_ok = True
+        font_statuses.append(font_is_ok)
     else:
         if run_with_theme:
             if theme_is_ok:
                 font_is_ok = True
+                font_statuses.append(font_is_ok)
             else:
                 # print("Ошибка в run есть тема")
                 # todo: пока не можем детектировать такие раны
                 font_is_ok = False
+                font_statuses.append(font_is_ok)
                 # return False
         else:
-            for para in file.docx.paragraphs[file.safe_table_of_content_index:]:
+            fonts = set()
+            for para in file.white_paras():
                 for run in para.runs:
                     if run.font.name is not None:
+                        fonts.add(run.font.name)
                         if run.font.name == ok_font:
                             font_is_ok = True
+                            font_statuses.append(font_is_ok)
                         else:
                             highlight_mistake(Mistakes.FONTS, paragraph=para)
-                            #print(f"Ошибка неправильный шрифт в run {shorten(para.text)}")
+                            print(f"Ошибка неправильный шрифт в run {shorten(para.text)}")
                             font_is_ok = False
+                            font_statuses.append(font_is_ok)
                             # return False
                     elif run.style.font.name is not None:
                         style = run.style
                         if style.style_id in styles_with_theme:
                             if theme_is_ok:
                                 font_is_ok = True
+                                font_statuses.append(font_is_ok)
                             else:
                                 highlight_mistake(Mistakes.FONTS, paragraph=para)
-                                #print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
+                                print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
                                 font_is_ok = False
+                                font_statuses.append(font_is_ok)
                                 # return False
                         else:
                             if style.font.name == ok_font:
+                                fonts.add(style.font.name)
                                 font_is_ok = True
+                                font_statuses.append(font_is_ok)
                             else:
                                 highlight_mistake(Mistakes.FONTS, paragraph=para)
-                                #print(f"Ошибка в стиле run {shorten(para.text)}")
+                                print(f"Ошибка в стиле run {shorten(para.text)}")
                                 font_is_ok = False
+                                font_statuses.append(font_is_ok)
                                 # return False
                     # elif run.style.font.name is None:
                     else:
                         if run.style.style_id in styles_with_theme:
                             if theme_is_ok:
                                 font_is_ok = True
+                                font_statuses.append(font_is_ok)
                             else:
-                                #print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
+                                print(f"Ошибка в стиле run есть тема {shorten(para.text)}")
                                 highlight_mistake(Mistakes.FONTS, paragraph=para)
                                 font_is_ok = False
+                                font_statuses.append(font_is_ok)
                                 # return False
                         else:
                             if run.style.base_style is not None and run.style.base_style.font.name is not None:
@@ -353,19 +388,23 @@ def get_font_is_ok(file: ExtendedDocument):
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
                                             font_is_ok = True
+                                            font_statuses.append(font_is_ok)
                                             # todo: check it
                                             break
                                         else:
-                                            #print(f"Ошибка в родительском стиле run есть тема {shorten(para.text)}")
+                                            print(f"Ошибка в родительском стиле run есть тема {shorten(para.text)}")
                                             highlight_mistake(Mistakes.FONTS, paragraph=para)
                                             font_is_ok = False
+                                            font_statuses.append(font_is_ok)
                                             # return False
+
                                     else:
                                         font = style.font.name
                                 if font != ok_font:
-                                    #print(f"Ошибка не тот шрифт в родительском стиле run {shorten(para.text)}")
+                                    print(f"Ошибка не тот шрифт в родительском стиле run {shorten(para.text)}")
                                     highlight_mistake(Mistakes.FONTS, paragraph=para)
                                     font_is_ok = False
+                                    font_statuses.append(font_is_ok)
                                     # return False
                             else:
                                 style = para.style
@@ -375,30 +414,41 @@ def get_font_is_ok(file: ExtendedDocument):
                                         if theme_is_ok:
                                             # todo: не используется font_is_ok - исправить
                                             font_is_ok = True
+                                            font_statuses.append(font_is_ok)
                                         else:
-                                            #print(f"Ошибка в стиле параграфа есть тема {shorten(para.text)}")
+                                            print(f"Ошибка в стиле параграфа есть тема {shorten(para.text)}")
                                             highlight_mistake(Mistakes.FONTS, paragraph=para)
                                             font_is_ok = False
+                                            font_statuses.append(font_is_ok)
                                             # return False
                                 while font is None and style.base_style:
                                     style = style.base_style
                                     if style.style_id in styles_with_theme:
                                         if theme_is_ok:
                                             font_is_ok = True
+                                            font_statuses.append(font_is_ok)
                                         else:
-                                            #print(f"Ошибка в родительском стиле параграфа есть тема {shorten(para.text)}")
+                                            print(f"Ошибка в родительском стиле параграфа есть тема {shorten(para.text)}")
                                             highlight_mistake(Mistakes.FONTS, paragraph=para)
                                             font_is_ok = False
+                                            font_statuses.append(font_is_ok)
                                             # return False
                                     else:
                                         font = style.font.name
                                 if font == ok_font:
+                                    fonts.add(font)
                                     font_is_ok = True
+                                    font_statuses.append(font_is_ok)
                                 else:
-                                    #print(f"Ошибка в стиле параграфа не тот шрифт {shorten(para.text)}")
+                                    print(f"Ошибка в стиле параграфа не тот шрифт {shorten(para.text)}")
                                     highlight_mistake(Mistakes.FONTS, paragraph=para)
                                     font_is_ok = False
+                                    font_statuses.append(font_is_ok)
                                     # return False
+    print(fonts)
+
+    if False in font_statuses:
+        font_is_ok = False
 
     return font_is_ok
 
@@ -409,16 +459,17 @@ def alignment_is_ok(doc: ExtendedDocument):
     alignment_ok = False
     for para in doc.docx.paragraphs[doc.safe_table_of_content_index:]:
         if para.text and len(para.text) != 0 and para.text != "\n":
-            if para.style.name in style_name or para.style.base_style and para.style.base_style.name in style_name or re.fullmatch(pic_pattern, para.text):
+            if para.style.name in style_name or para.style.base_style and para.style.base_style.name in style_name or re.fullmatch(
+                    pic_pattern, para.text):
                 if para.alignment:
                     if para.alignment == WD_ALIGN_PARAGRAPH.CENTER:
                         alignment_ok = True
-                        #print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
+                        # print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         highlight_mistake(Mistakes.ALIGNMENT, paragraph=para,
                                           additional_info="Выравнивание заголовка или подписи к рисунку неправильное")
-                        #print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
+                        # print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
                 else:
                     style = para.style
                     alignment = para.style.paragraph_format.alignment
@@ -427,21 +478,21 @@ def alignment_is_ok(doc: ExtendedDocument):
                         alignment = style.paragraph_format.alignment
                     if alignment == WD_ALIGN_PARAGRAPH.CENTER:
                         alignment_ok = True
-                        #print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
+                        # print(f"Выравнивание заголовка или подписи к рисунку правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         highlight_mistake(Mistakes.ALIGNMENT, paragraph=para,
                                           additional_info="Выравнивание заголовка или подписи к рисунку неправильное")
-                        #print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
+                        # print(f"Выравнивание заголовка или подписи к рисунку неправильное {shorten(para.text)}")
             else:
                 if para.alignment:
                     if para.alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
                         alignment_ok = True
-                        #print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
+                        # print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         highlight_mistake(Mistakes.ALIGNMENT, paragraph=para)
-                        #print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
+                        # print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
                 else:
                     style = para.style
                     alignment = para.style.paragraph_format.alignment
@@ -450,11 +501,11 @@ def alignment_is_ok(doc: ExtendedDocument):
                         alignment = style.paragraph_format.alignment
                     if alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
                         alignment_ok = True
-                        #print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
+                        # print(f"Выравнивание обычного текста правильное {shorten(para.text)}")
                     else:
                         alignment_ok = False
                         highlight_mistake(Mistakes.ALIGNMENT, paragraph=para)
-                        #print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
+                        # print(f"Выравнивание обычного текста неправильное {shorten(para.text)}")
         elif para.text == "\n":
             alignment_ok = True
         if not alignment_ok:
@@ -494,7 +545,6 @@ def line_spacing_is_ok(doc: ExtendedDocument):
     return line_spacing_ok
 
 
-
 # ======================================================================
 
 
@@ -505,4 +555,6 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.askopenfilename()
-    print(file_check_interface(file_path, mock=False).json_result)
+    selected_boxes = [i for i in range(7)]
+    print(file_path)
+    print(file_check_interface(file_path, selected_boxes, mock=False).json_result)

@@ -91,4 +91,23 @@ class ExtendedDocument:
 
         return ind_para_content
 
+    def white_paras(self):
+        return self.__paras(self.safe_table_of_content_index, True)
+
+    def __paras(self, offset=0, ignore_flags=False):
+        append = True
+        for para in self.docx.paragraphs[offset:]:
+            para_text = para.text.strip().lower()
+            if ignore_flags:
+                if "@start" in para_text:
+                    append = False
+                    continue
+                elif "@stop" in para_text:
+                    append = True
+                    continue
+            if append:
+                yield para
+
+
+
 
