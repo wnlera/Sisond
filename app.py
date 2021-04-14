@@ -18,7 +18,6 @@ app.mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.docum
 @app.route('/', methods=["GET", "POST"])
 def hello_world():
     if request.method == "POST":
-        a=1/0
         selected_boxes = request.form.getlist("parameters_checkbox")
         print(selected_boxes)
         try:
