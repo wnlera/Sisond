@@ -218,8 +218,6 @@ function SendFile() {
     var fd = new FormData(document.querySelector("form"));
     // fd.append("CustomField", "This is some extra data");
     $.ajax({
-        // url: "https://6f412c5e-e568-4592-bcde-2f9f011ad67a.mock.pstmn.io",
-        // url: "https://demo2398178.mockable.io/",
         url: window.location.href,
         type: "POST",
         data: fd,
@@ -239,9 +237,15 @@ function SendFile() {
 
         },
         error: function (xhr, textStatus, errorThrown) {
-            if (textStatus === "BAD REQUEST"){
-                // TODO: сделать красивое сообщение
-                alert("Отправленный вами файл не соответствует требованиям")
+            if ((xhr.responseText !== undefined) && (xhr.responseText !== null)){
+                if(xhr.responseText[0] === "#")
+                {
+                    let text = xhr.responseText.slice(1);
+                    alert(text)
+                }
+                else {
+                    alert("Что-то пошло не так. Попробуйте отправить ещё раз.")
+                }
             }
             else{
                 console.log(errorThrown);

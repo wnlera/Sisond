@@ -2,6 +2,7 @@ from docx.document import Document
 import docx
 from FormatChecker.Utils.zip import get_inner_file
 from FormatChecker.Utils.xml import get_xml_repr
+from Exceptions import WrongFormat
 
 from io import BytesIO
 
@@ -16,7 +17,10 @@ class ExtendedDocument:
     """
     def __init__(self, docx_file):
         self.os_file = docx_file
-        self.docx: Document = docx.Document(self.os_file)
+        try:
+            self.docx: Document = docx.Document(self.os_file)
+        except ValueError:
+            raise WrongFormat()
         self._xml_theme1_path = "word/theme/theme1.xml"
         self._xml_doc_path = "word/document.xml"
         self._xml_styles_path = "word/styles.xml"

@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="709df681-bc01-4133-a056-ea2ca63e892c" name="Default Changelist" comment="">
+    <list default="true" id="709df681-bc01-4133-a056-ea2ca63e892c" name="Default Changelist" comment="Add ignored zones, fix functions, fix text in html">
+      <change afterPath="$PROJECT_DIR$/Exceptions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FormatChecker/ExtendedDocxDoc.py" beforeDir="false" afterPath="$PROJECT_DIR$/FormatChecker/ExtendedDocxDoc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/checker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/script.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,6 +67,28 @@
     </key>
   </component>
   <component name="RunManager" selected="Flask server.Sisond">
+    <configuration name="Exceptions" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Sisond" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Exceptions.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="checker" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Sisond" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -192,9 +215,11 @@
       <item itemvalue="Python.checker" />
       <item itemvalue="Python.docx_check" />
       <item itemvalue="Python.pdf" />
+      <item itemvalue="Python.Exceptions" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Exceptions" />
         <item itemvalue="Python.checker" />
         <item itemvalue="Flask server.Flask (app.py)" />
         <item itemvalue="Python.pdf" />
@@ -250,8 +275,20 @@
       <workItem from="1613673940932" duration="14122000" />
       <workItem from="1614194065281" duration="588000" />
       <workItem from="1614277534755" duration="1454000" />
-      <workItem from="1617813934265" duration="12128000" />
+      <workItem from="1617813934265" duration="12625000" />
+      <workItem from="1618416601400" duration="1071000" />
+      <workItem from="1618428570469" duration="496000" />
+      <workItem from="1618429104634" duration="986000" />
+      <workItem from="1618430160545" duration="3304000" />
     </task>
+    <task id="LOCAL-00001" summary="Add ignored zones, fix functions, fix text in html">
+      <created>1617826718458</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1617826718458</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -272,12 +309,16 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add ignored zones, fix functions, fix text in html" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add ignored zones, fix functions, fix text in html" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app.py</url>
-          <line>22</line>
+          <line>24</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -289,12 +330,13 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Sisond$docx_test.coverage" NAME="docx_test Coverage Results" MODIFIED="1612896981644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1589836312724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/Sisond$checker.coverage" NAME="checker Coverage Results" MODIFIED="1617815852774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Sisond$Sisond.coverage" NAME="Sisond Coverage Results" MODIFIED="1618433397358" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$wsgi.coverage" NAME="wsgi Coverage Results" MODIFIED="1587311473741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Sisond$Sisond.coverage" NAME="Sisond Coverage Results" MODIFIED="1617826390111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$docx_check.coverage" NAME="docx_check Coverage Results" MODIFIED="1589060597111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Sisond$Exceptions.coverage" NAME="Exceptions Coverage Results" MODIFIED="1618430790880" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Sisond$docx_test.coverage" NAME="docx_test Coverage Results" MODIFIED="1612896981644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Sisond$checker.coverage" NAME="checker Coverage Results" MODIFIED="1617815852774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sisond$pdf.coverage" NAME="pdf Coverage Results" MODIFIED="1589486029352" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -9,6 +9,7 @@ from transliterate.exceptions import LanguageDetectionError
 
 import config
 from MemFiles import MemFileManager, MemFile
+from Exceptions import MyBaseException, WrongFormat
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 app.secret_key = config.secret
@@ -17,6 +18,7 @@ app.mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.docum
 @app.route('/', methods=["GET", "POST"])
 def hello_world():
     if request.method == "POST":
+        a=1/0
         selected_boxes = request.form.getlist("parameters_checkbox")
         print(selected_boxes)
         try:
@@ -55,13 +57,25 @@ def whats_wrong(review_id):
     return send_file(mem_file.file, mimetype=app.mime, as_attachment=True, attachment_filename=attachment_filename)
 
 
+@app.errorhandler(Exception)
+def handle_exception2(e):
+    print(f"Unspecified error: {e}")
+    return handle_exception(MyBaseException())
+
+
+@app.errorhandler(MyBaseException)
+def handle_exception(e):
+    print(f"Error occurred: {e}, {e.msg}")
+    return make_response("#" + e.msg, e.code)
+
+
 @app.before_first_request
 def startup():
     app.mem_file_manager = MemFileManager()
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=False)
 
 # todo: использовать только review_id или только uid
 # todo: использовать только link или только url
