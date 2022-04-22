@@ -8,7 +8,7 @@ lxml==4.5.0
 MarkupSafe==1.1.1
 py7zr==0.6
 pycryptodome==3.9.7
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 python-docx==0.8.10
 texttable==1.6.2
 Werkzeug==1.0.0
